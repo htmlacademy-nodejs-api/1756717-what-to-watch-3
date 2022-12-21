@@ -1,7 +1,7 @@
 # Личный проект «Что посмотреть»
 
 * Студент: [Мария Елистратова](https://up.htmlacademy.ru/nodejs-api/3/user/1756717).
-* Наставник: `Неизвестно`.
+* Наставник: [Михаил Кислый](https://htmlacademy.ru/profile/smart-grizzly).
 
 ---
 
