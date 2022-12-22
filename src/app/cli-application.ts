@@ -6,6 +6,7 @@ type ParsedCommand = {
 
 export default class CLIApplication {
   private commands: {[propertyName: string]: CliCommandInterface} = {};
+  private defaultCommand = '--help';
 
   private parseCommand(cliArguments: string[]): ParsedCommand {
     const parsedCommand: ParsedCommand = {};
@@ -29,5 +30,9 @@ export default class CLIApplication {
       acc[cliCommand.name] = cliCommand;
       return acc;
     }, this.commands);
+  }
+
+  public getCommand(commandName: string): CliCommandInterface {
+    return this.commands[commandName] ?? this.commands[this.defaultCommand];
   }
 }
