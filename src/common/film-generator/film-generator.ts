@@ -12,7 +12,7 @@ export default class FilmGenerator implements FilmGeneratorInterface {
   public generate(): string {
     const name = getRandomItem<string>(this.mockData.names);
     const description = getRandomItem<string>(this.mockData.descriptions);
-    const postDate = dayjs().subtract(generateRandomValue(DateSettings.FIRST_WEEK_DAY, DateSettings.LAST_WEEK_DAY), 'day').toISOString();
+    const createdDate = dayjs().subtract(generateRandomValue(DateSettings.FIRST_WEEK_DAY, DateSettings.LAST_WEEK_DAY), 'day').toISOString();
     const genre = getRandomItem<string>(Object.keys(GenreType));
     const released = generateRandomValue(FilmReleaseYearSettings.MIN, FilmReleaseYearSettings.MAX).toString();
     const rating = generateRandomValue(RatingSettings.MIN, RatingSettings.MAX, RatingSettings.NUM_AFTER_DIGIT).toString();
@@ -30,7 +30,7 @@ export default class FilmGenerator implements FilmGeneratorInterface {
     const backgroundColor = getRandomItem<string>(this.mockData.backgroundColors);
 
     return [
-      name, description, postDate,
+      name, description, createdDate,
       genre, released, rating,
       previewVideoLink, videoLink,
       starring, director, runTime,
