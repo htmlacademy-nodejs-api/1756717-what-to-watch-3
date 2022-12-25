@@ -44,3 +44,6 @@ export const createFilm = (row: string) => {
     backgroundColor,
   } as Film;
 };
+
+export const getErrorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : '';

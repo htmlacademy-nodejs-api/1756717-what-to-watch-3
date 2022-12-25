@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs';
 import EventEmitter from 'events';
 import { createReadStream } from 'fs';
 import { FileReaderInterface } from './file-reader.interface.js';
@@ -10,7 +9,7 @@ export default class TSVFileReader extends EventEmitter implements FileReaderInt
 
   public async read(): Promise<void> {
     const stream = createReadStream(this.filename, {
-      highWaterMark: 2 ** 4,
+      highWaterMark: 2 ** 5,
       encoding: 'utf-8',
     });
 
@@ -21,8 +20,8 @@ export default class TSVFileReader extends EventEmitter implements FileReaderInt
     for await (const chunk of stream) {
       lineRead += chunk.toString();
 
-      endLinePosition = lineRead.indexOf('\n');
-      while ((endLinePosition >= 0)) {
+      while ((lineRead.indexOf('\n')) >= 0) {
+        endLinePosition = lineRead.indexOf('\n');
         const completeRow = lineRead.slice(0, endLinePosition + 1);
         lineRead = lineRead.slice(++endLinePosition);
         importedRowCount++;
