@@ -1,0 +1,113 @@
+{
+  "api": {
+    "names": [
+      "A Star Is Born",
+      "Moonrise Kingdom",
+      "Legend",
+      "Fantastic Beasts: The Crimes of Grindelwald",
+      "Midnight Special",
+      "Matrix",
+      "Pulp Fiction",
+      "Shutter Island"
+    ],
+    "descriptions": [
+      "A musician helps a young singer find fame as age and alcoholism send his own career into a downward spiral.",
+      "A pair of young lovers flee their New England town, which causes a local search party to fan out to find them.",
+      "Identical twin gangsters Ronald and Reginald Kray terrorize London during the 1960s.",
+      "In an effort to thwart Grindelwald's plans of raising pure-blood wizards to rule over all non-magical beings, Albus Dumbledore enlists his former student Newt Scamander, who agrees to help, though he's unaware of the dangers that lie ahead. Lines are drawn as love and loyalty are tested, even among the truest friends and family, in an increasingly divided wizarding world.",
+      "A father and son go on the run, pursued by the government and a cult drawn to the child's special powers.",
+      "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+      "The lives of two mob hitmen, a boxer, a gangster & his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+      "In 1954, a U.S. Marshal investigates the disappearance of a murderer, who escaped from a hospital for the criminally insane."
+    ],
+    "previewVideoLinks": [
+      "https://11.react.pages.academy/static/film/video/traffic.mp4",
+      "https://11.react.pages.academy/static/film/video/dog.mp4"
+    ],
+    "videoLinks": [
+      "https://11.react.pages.academy/static/film/video/bubbles.mp4",
+      "https://11.react.pages.academy/static/film/video/matrix.mp4",
+      "https://11.react.pages.academy/static/film/video/bike.mp4"
+    ],
+    "actors": [
+      "Lady Gaga",
+      "Bradley Cooper",
+      "Sam Elliott",
+      "Jared Gilman",
+      "Kara Hayward",
+      "Bruce Willis",
+      "Tom Hardy",
+      "Emily Browning",
+      "Taron Egerton"
+    ],
+    "directors": [
+      "Bradley Cooper",
+      "Wes Anderson",
+      "Brian Helgeland",
+      "David Yates",
+      "Jeff Nichols",
+      "Wachowski Brothers",
+      "Quentin Tarantino",
+      "Martin Scorsese"
+    ],
+    "users": [
+      "Иван",
+      "Олег",
+      "Пётр",
+      "Василий",
+      "Антон",
+      "Борис",
+      "Джон",
+      "Эмили"
+    ],
+    "emails": [
+      "snow@pisem.local",
+      "president@dka.local",
+      "fish@big.local",
+      "test@pisem.local",
+      "freedom@pisem.local",
+      "rolan@pochta.local",
+      "author@mir.local",
+      "test@lost.local",
+      "kujo-fan@story.local"
+    ],
+    "avatarUrls": [
+      "user.jpg",
+      "photo.jpg",
+      "awesome-avatar.jpg",
+      "roland.jpg",
+      "smit.jpg",
+      "coffee.jpg"
+    ],
+    "posterImages": [
+      "https://11.react.pages.academy/static/film/poster/A_Star_Is_Born.jpg",
+      "https://11.react.pages.academy/static/film/poster/Moonrise_Kingdom.jpg",
+      "https://11.react.pages.academy/static/film/poster/Legend.jpg",
+      "https://11.react.pages.academy/static/film/poster/Fantastic_Beasts.jpg",
+      "https://11.react.pages.academy/static/film/poster/Midnight_Special.jpg",
+      "https://11.react.pages.academy/static/film/poster/matrix.jpg",
+      "https://11.react.pages.academy/static/film/poster/Pulp_Fiction.jpg",
+      "https://11.react.pages.academy/static/film/poster/Shutter_Island.jpg"
+    ],
+    "backgroundImages": [
+      "https://11.react.pages.academy/static/film/background/A_Star_is_Born.jpg",
+      "https://11.react.pages.academy/static/film/background/Moonrise_Kingdom.jpg",
+      "https://11.react.pages.academy/static/film/background/legend.jpg",
+      "https://11.react.pages.academy/static/film/background/Fantastic_Beasts.jpg",
+      "https://11.react.pages.academy/static/film/background/Midnight_Special.jpg",
+      "https://11.react.pages.academy/static/film/background/matrix.jpg",
+      "https://11.react.pages.academy/static/film/background/Pulp_Fiction.jpg",
+      "https://11.react.pages.academy/static/film/background/Shutter_Island.jpg"
+    ],
+    "backgroundColors": [
+      "#C4C0C0",
+      "#D8E3E5",
+      "#E1DAD7",
+      "#B6A99F",
+      "#828585",
+      "#B9B27E",
+      "#795433",
+      "#977461"
+    ]
+  }
+}
