@@ -27,6 +27,10 @@ export default class UserService implements UserServiceInterface {
     return this.userModel.findOne({email});
   }
 
+  public async findByID(id: number): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel.findOne({id});
+  }
+
   public async findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>> {
     const existedUser = await this.findByEmail(dto.email);
 
