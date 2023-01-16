@@ -14,3 +14,148 @@ tags:
     description: Действия с комментариями.
   - name: users
     description: Действия с пользователем.
+paths:
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      description: Регистрирует нового пользователя.
+
+      requestBody:
+        description: Информация для создания нового пользователя.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createUser"
+        required: true
+
+      responses:
+        "201":
+          description: Пользователь зарегистрирован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+
+        "400":
+          description: Логин или пароль не валидны.
+
+        "409":
+          description: Пользователь с таким email уже существует.
+
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      description: Авторизует пользователя на основе логина и пароля
+
+      requestBody:
+        description: Информация для авторизации.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/loginUser"
+        required: true
+
+      responses:
+        "200":
+          description: Пользователь авторизован.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/token"
+
+        "400":
+          description: Логин или пароль неверный.
+
+        "404":
+          description: Пользователь с таким логином не существует
+
+    get:
+      tags:
+        - users
+      summary: Проверка состояния пользователя
+      description: Возвращает информацию по авторизованному пользователю
+
+      responses:
+        "200":
+          description: Пользователь авторизован. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user"
+
+  /users/{userId}/avatar:
+    post:
+      tags:
+        - users
+      summary: Загрузить изображение аватара
+      description: Загружает изображение аватара пользователя. Изображение
+        аватара должно быть в формате `png` или `jpg`.
+
+      responses:
+        "201":
+          description: Пользователь изменен. Объект пользователя.
+
+        "400":
+          description: Некорректный формат изображения
+
+        "404":
+          description: Пользователь с таким логином не существует.
+
+
+components:
+  schemas:
+    createUser:
+      type: object
+
+      properties:
+        email:
+          type: string
+          example: test@lost.local
+
+        userName:
+          type: string
+          example: Emilia
+
+        password:
+          type: string
+          example: 123456
+
+    loginUser:
+      type: object
+
+      properties:
+        userName:
+          type: string
+          example: Emilia
+
+        password:
+          type: string
+          example: 123456
+
+    user:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 6317c3d6a54ab1061c6434ea
+
+        userName:
+          type: string
+          example: Emilia
+
+        email:
+          type: string
+          example: test@lost.local
+
+    token:
+      type: object
+
+      properties:
+        X-token:
+          type: string;
+          example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
