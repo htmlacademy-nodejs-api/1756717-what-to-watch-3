@@ -15,6 +15,106 @@ tags:
   - name: users
     description: Действия с пользователем.
 paths:
+  /films:
+    post:
+      tags:
+        -films
+      summary: Добавление фильма
+      description: Добавляет нового фильма
+
+      requestBody:
+        description: Информация для создания нового фильма
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createOrUpdateFilm"
+        required: true
+
+      responses:
+        "201":
+          description: Фильм создан. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+        "400":
+          description: Данные не валидны.
+
+        "401":
+          description: Пользователь не авторизован.
+
+    get:
+      tags:
+        -films
+      summary: Получение списка фильмов
+      description: Получает список фильмов
+
+      requestBody:
+        description: Информация для создания нового фильма
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/filmsInListLimit"
+
+      responses:
+        "200":
+          description: Возвращает массив фильмов. 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/films"
+
+
+  /films/{filmId}:
+    put:
+      tags:
+        -films
+      summary: Редактирование фильма
+      description: Редактирует карточку фильма
+
+      requestBody:
+        description: Информация для редактирования фильма
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createOrUpdateFilm"
+        required: true
+
+      responses:
+        "201":
+          description: Фильм изменён. Объект фильма.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+        "400":
+          description: Данные не валидны.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "403":
+          description: Недостаточно прав для редактирования фильма.
+    
+    delete:
+      tags:
+        -films
+      summary: Удаление фильма
+      description: Удаляет карточку фильма
+
+      responses:
+        "204":
+          description: Фильм удалён.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "403":
+          description: Недостаточно прав для удаления фильма.
+
+
   /users/register:
     post:
       tags:
@@ -108,6 +208,165 @@ paths:
 
 components:
   schemas:
+    createOrUpdateFilm:
+      type: object
+
+      properties:
+        name:
+          type: string
+          example: Matrix
+
+        description:
+          type: string
+          example: A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.
+
+        genre:
+          type: string
+          example: Drama
+
+        released:
+          type: number
+          example: 2010
+
+        previewVideoLink:
+          type: string
+          example: https://11.react.pages.academy/static/film/video/traffic.mp4
+
+        videoLink:
+          type: string
+          example: https://11.react.pages.academy/static/film/video/bubbles.mp4
+
+        starring:
+          type: [string]
+          example: Bruce Willis
+
+        director:
+          type: string
+          example: Quentin Tarantino
+
+        runTime:
+          type: number
+          example: 130
+
+        posterImage:
+          type: string
+          example: https://11.react.pages.academy/static/film/poster/matrix.jpg
+
+        backgroundImage:
+          type: string
+          example: https://11.react.pages.academy/static/film/background/matrix.jpg
+
+        backgroundColor:
+          type: string
+          example: #B9B27E    
+
+    film:
+      type: object
+
+      properties:
+        name:
+          type: string
+          example: Matrix
+
+        description:
+          type: string
+          example: A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.
+
+        postDate:
+          type: string
+          format: date-time
+          example: 2022-12-22T08:45:40.283Z
+
+        genre:
+          type: string
+          example: Drama
+
+        released:
+          type: number
+          example: 2010
+
+        rating:
+          type: number
+          example: 0
+
+        previewVideoLink:
+          type: string
+          example: https://11.react.pages.academy/static/film/video/traffic.mp4
+
+        videoLink:
+          type: string
+          example: https://11.react.pages.academy/static/film/video/bubbles.mp4
+
+        starring:
+          type: [string]
+          example: Bruce Willis
+
+        director:
+          type: string
+          example: Quentin Tarantino
+
+        runTime:
+          type: number
+          example: 130
+
+        commentsAmount:
+          type: number
+          example: 110
+
+        posterImage:
+          type: string
+          example: https://11.react.pages.academy/static/film/poster/matrix.jpg
+
+        backgroundImage:
+          type: string
+          example: https://11.react.pages.academy/static/film/background/matrix.jpg
+
+        backgroundColor:
+          type: string
+          example: #B9B27E  
+
+    filmsInListLimit:
+      type: object
+
+      properties:  
+        limit:
+          type: number
+          example: 100
+
+    films:
+      type: object
+      format: array
+
+      properties:
+        name:
+          type: string
+          example: Matrix
+
+        postDate:
+          type: string
+          format: date-time
+          example: 2022-12-22T08:45:40.283Z
+
+        genre:
+          type: string
+          example: Drama
+        
+        previewVideoLink:
+          type: string
+          example: https://11.react.pages.academy/static/film/video/traffic.mp4
+
+        userId:
+          type: string
+          example: 6317c3d6a54ab1061c6434ea
+
+        posterImage:
+          type: string
+          example: https://11.react.pages.academy/static/film/poster/matrix.jpg
+
+        commentsAmount:
+          type: number
+          example: 110
+
     createUser:
       type: object
 
