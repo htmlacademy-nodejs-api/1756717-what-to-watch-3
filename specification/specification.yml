@@ -18,7 +18,7 @@ paths:
   /films:
     post:
       tags:
-        -films
+        - films
       summary: Добавление фильма
       description: Добавляет новый фильм
 
@@ -46,7 +46,7 @@ paths:
 
     get:
       tags:
-        -films
+        - films
       summary: Получение списка фильмов
       description: Получает список фильмов
 
@@ -69,7 +69,7 @@ paths:
   /films/{genre}:
     get:
       tags:
-        -films
+        - films
       summary: Получение списка фильмов определённого жанра
       description: Получает список фильмов определённого жанра
 
@@ -104,7 +104,7 @@ paths:
   /films/{filmId}:
     put:
       tags:
-        -films
+        - films
       summary: Редактирование фильма
       description: Редактирует карточку фильма
 
@@ -148,7 +148,7 @@ paths:
     
     delete:
       tags:
-        -films
+        - films
       summary: Удаление фильма
       description: Удаляет карточку фильма
 
@@ -167,7 +167,7 @@ paths:
 
     get:
       tags:
-        -films
+        - films
       summary: Получение детальной информации по фильму
       description: Получает детальную информацию по фильму
 
@@ -186,7 +186,7 @@ paths:
   /films/promo:
     get:
       tags:
-        -films
+        - films
       summary: Получение промо-фильма
       description: Получает промо-фильм
 
@@ -201,7 +201,7 @@ paths:
   /films/favorite:
     get:
       tags:
-        -films
+        - films
       summary: Получение списка фильмов "К просмотру"
       description: Получает список фильмов "К просмотру"
 
@@ -219,7 +219,7 @@ paths:
   /films/favorite/{filmId}/{status}:
     post:
       tags:
-        -films
+        - films
       summary: Добавление/удаление фильма из списка "К просмотру"
       description: Добавляет/удаляет фильма из списка "К просмотру"
 
@@ -251,6 +251,77 @@ paths:
         "401":
           description: Пользователь не авторизован. 
 
+        "404":
+          description: Такой фильм не существует
+
+
+  /comments/{filmId}:
+    get:
+      tags:
+        - comments
+      summary: Получение списка комментариев для определенного фильма
+      description: Получает список комментариев для определенного фильма
+
+      parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+
+      responses:
+        "200":
+          description: Массив комментариев
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/comments"
+
+        "404":
+          description: Такой фильм не существует.
+
+    post: 
+      tags:
+        - comments
+      summary: Добавление нового комментария к определённому фильму
+      description: Добавляет новый комментарий к определённому фильму
+
+      parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+
+      requestBody:
+        description: Информация для создания нового комментария
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createComment"
+        required: true
+
+      responses:
+        "201":
+          description: Комментарий создан. Объект комментария.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/comment"
+
+        "400":
+          description: Данные не валидны.
+
+        "401":
+          description: Пользователь не авторизован.
+
+        "404":
+          description: Такой фильм не существует
+      
 
   /users/register:
     post:
@@ -520,6 +591,61 @@ components:
           commentsAmount:
             type: number
             example: 110
+
+    comments:
+      type: array
+      items:
+        type: object
+        properties:
+          message:
+            type: string
+            example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
+
+          rating:
+            type: number
+            example: 7.8
+
+          postDate:
+            type: string
+            format: date-time
+            example: 2022-12-22T08:45:40.283Z
+
+          userId:
+            type: string
+            example: 6317c3d6a54ab1061c6434ea  
+
+    createComment:
+      type: object
+      
+      properties:
+          message:
+            type: string
+            example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
+
+          rating:
+            type: number
+            example: 7.8    
+
+    comment:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director's funniest and most exquisitely designed movies in years.
+
+        rating:
+          type: number
+          example: 7.8
+
+        postDate:
+          type: string
+          format: date-time
+          example: 2022-12-22T08:45:40.283Z
+
+        userId:
+          type: string
+          example: 6317c3d6a54ab1061c6434ea 
+
 
     createUser:
       type: object
