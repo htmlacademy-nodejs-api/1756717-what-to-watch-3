@@ -20,7 +20,7 @@ paths:
       tags:
         -films
       summary: Добавление фильма
-      description: Добавляет нового фильма
+      description: Добавляет новый фильм
 
       requestBody:
         description: Информация для создания нового фильма
@@ -50,12 +50,13 @@ paths:
       summary: Получение списка фильмов
       description: Получает список фильмов
 
-      requestBody:
-        description: Информация для создания нового фильма
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/filmsInListLimit"
+      parameters:
+        - name: limit
+          in: query
+          description: Максимальное количество возвращаемых фильмов
+          schema:
+            type: number
+            example: 60
 
       responses:
         "200":
@@ -65,6 +66,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/films"
 
+  /films/{genre}:
+    get:
+      tags:
+        -films
+      summary: Получение списка фильмов определённого жанра
+      description: Получает список фильмов определённого жанра
+
+      parameters:
+        - name: genre
+          in: path
+          description: Определённый жанр фильмов
+          required: true
+          schema:
+            type: string
+            example: Drama
+
+        - name: limit
+          in: query
+          description: Максимальное количество возвращаемых фильмов
+          schema:
+            type: number
+            example: 100
+
+      responses:
+        "200":
+          description: Возвращает массив фильмов определённого жанра. 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/films"
+
+        "404":
+          description: Такой жанр не существует
+
 
   /films/{filmId}:
     put:
@@ -72,6 +107,16 @@ paths:
         -films
       summary: Редактирование фильма
       description: Редактирует карточку фильма
+
+      parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+
 
       requestBody:
         description: Информация для редактирования фильма
@@ -97,6 +142,9 @@ paths:
 
         "403":
           description: Недостаточно прав для редактирования фильма.
+
+        "404":
+          description: Такой фильм не существует
     
     delete:
       tags:
@@ -113,6 +161,95 @@ paths:
 
         "403":
           description: Недостаточно прав для удаления фильма.
+
+        "404":
+          description: Такой фильм не существует
+
+    get:
+      tags:
+        -films
+      summary: Получение детальной информации по фильму
+      description: Получает детальную информацию по фильму
+
+      responses:
+        "200":
+          description: Возвращает детальную информацию по фильму. 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+        "404":
+          description: Такой фильм не существует
+
+  
+  /films/promo:
+    get:
+      tags:
+        -films
+      summary: Получение промо-фильма
+      description: Получает промо-фильм
+
+      responses:
+        "200":
+          description: Возвращает объект промо-фильма. 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+  /films/favorite:
+    get:
+      tags:
+        -films
+      summary: Получение списка фильмов "К просмотру"
+      description: Получает список фильмов "К просмотру"
+
+      responses:
+        "200":
+          description: Возвращает массив фильмов, добавленных в список "К просмотру" 
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/films"
+
+        "401":
+          description: Пользователь не авторизован. 
+
+  /films/favorite/{filmId}/{status}:
+    post:
+      tags:
+        -films
+      summary: Добавление/удаление фильма из списка "К просмотру"
+      description: Добавляет/удаляет фильма из списка "К просмотру"
+
+      parameters:
+        - name: filmId
+          in: path
+          description: Уникальный идентификатор фильма
+          required: true
+          schema:
+            type: number
+            example: 1
+
+        - name: status
+          in: path
+          description: Статус фильма. Может быть 1 или 0, где 1 добавляет фильма в список «к просмотру», а 0 удаляет
+          required: true
+          schema:
+            type: number
+            example: 1
+
+      responses:
+        "200":
+          description: Объект фильма
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/film"
+
+        "401":
+          description: Пользователь не авторизован. 
 
 
   /users/register:
@@ -165,7 +302,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/token"
+                $ref: "#/components/schemas/userWithToken"
 
         "400":
           description: Логин или пароль неверный.
@@ -185,7 +322,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/user"
+                $ref: "#/components/schemas/userWithToken"
+
+        "401":
+          description: Пользователь не авторизован.
 
   /users/{userId}/avatar:
     post:
@@ -195,9 +335,22 @@ paths:
       description: Загружает изображение аватара пользователя. Изображение
         аватара должно быть в формате `png` или `jpg`.
 
+      parameters:
+        - name: userId
+          in: path
+          description: Уникальный идентификатор пользователя
+          required: true
+          schema:
+            type: number
+            example: 1
+
       responses:
         "201":
           description: Пользователь изменен. Объект пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userWithToken"
 
         "400":
           description: Некорректный формат изображения
@@ -237,8 +390,10 @@ components:
           example: https://11.react.pages.academy/static/film/video/bubbles.mp4
 
         starring:
-          type: [string]
-          example: Bruce Willis
+          type: array
+          items:
+            type: string
+            example: Bruce Willis
 
         director:
           type: string
@@ -258,7 +413,7 @@ components:
 
         backgroundColor:
           type: string
-          example: #B9B27E    
+          example: '#B9B27E'    
 
     film:
       type: object
@@ -298,8 +453,10 @@ components:
           example: https://11.react.pages.academy/static/film/video/bubbles.mp4
 
         starring:
-          type: [string]
-          example: Bruce Willis
+          type: array
+          items:
+            type: string
+            example: Bruce Willis
 
         director:
           type: string
@@ -313,6 +470,10 @@ components:
           type: number
           example: 110
 
+        userId:
+          type: string
+          example: 6317c3d6a54ab1061c6434ea
+
         posterImage:
           type: string
           example: https://11.react.pages.academy/static/film/poster/matrix.jpg
@@ -323,49 +484,42 @@ components:
 
         backgroundColor:
           type: string
-          example: #B9B27E  
+          example: '#B9B27E' 
 
-    filmsInListLimit:
-      type: object
-
-      properties:  
-        limit:
-          type: number
-          example: 100
 
     films:
-      type: object
-      format: array
+      type: array
+      items: 
+        type: object
+        properties:
+          name:
+            type: string
+            example: Matrix
 
-      properties:
-        name:
-          type: string
-          example: Matrix
+          postDate:
+            type: string
+            format: date-time
+            example: 2022-12-22T08:45:40.283Z
 
-        postDate:
-          type: string
-          format: date-time
-          example: 2022-12-22T08:45:40.283Z
-
-        genre:
-          type: string
-          example: Drama
+          genre:
+            type: string
+            example: Drama
         
-        previewVideoLink:
-          type: string
-          example: https://11.react.pages.academy/static/film/video/traffic.mp4
+          previewVideoLink:
+            type: string
+            example: https://11.react.pages.academy/static/film/video/traffic.mp4
 
-        userId:
-          type: string
-          example: 6317c3d6a54ab1061c6434ea
+          userId:
+            type: string
+            example: 6317c3d6a54ab1061c6434ea
 
-        posterImage:
-          type: string
-          example: https://11.react.pages.academy/static/film/poster/matrix.jpg
+          posterImage:
+            type: string
+            example: https://11.react.pages.academy/static/film/poster/matrix.jpg
 
-        commentsAmount:
-          type: number
-          example: 110
+          commentsAmount:
+            type: number
+            example: 110
 
     createUser:
       type: object
@@ -411,10 +565,31 @@ components:
           type: string
           example: test@lost.local
 
-    token:
+        avatarUrl:
+          type: string
+          example: user.jpg
+
+
+    userWithToken:
       type: object
 
       properties:
-        X-token:
-          type: string;
+        id:
+          type: string
+          example: 6317c3d6a54ab1061c6434ea
+
+        userName:
+          type: string
+          example: Emilia
+
+        email:
+          type: string
+          example: test@lost.local
+
+        avatarUrl:
+          type: string
+          example: user.jpg
+
+        token:
+          type: string
           example: T2xpdmVyLmNvbm5lckBnbWFpbC5jb20=
