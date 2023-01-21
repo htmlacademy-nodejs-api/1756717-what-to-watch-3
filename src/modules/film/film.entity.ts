@@ -16,7 +16,7 @@ export class FilmEntity extends defaultClasses.TimeStamps {
   @prop({ trim: true, required: true })
   public name!: string;
 
-  @prop({ trin: true, required: true })
+  @prop({ trim: true, required: true })
   public description!: string;
 
   @prop({ required: true })

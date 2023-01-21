@@ -11,7 +11,7 @@ export interface FilmServiceInterface {
   updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
   findByGenre(genre: string, count?: number): Promise<DocumentType<FilmEntity>[]>;
   incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
-  findPromo(): Promise<DocumentType<FilmEntity>>;
+  /*findPromo(): Promise<DocumentType<FilmEntity>>;*/
   findFavorite(): Promise<DocumentType<FilmEntity>[]>
   changeFavoriteStatus(filmId: string, status: number): Promise<DocumentType<FilmEntity> | null>;
   exists(documentId: string): Promise<boolean>;

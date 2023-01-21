@@ -71,12 +71,12 @@ export default class FilmService implements FilmServiceInterface {
       }}).exec();
   }
 
-  public async findPromo(): Promise<DocumentType<FilmEntity>> {
+  /*public async findPromo(): Promise<DocumentType<FilmEntity>> {
     return this.filmModel
       .find()
       .populate(['userId'])
       .exec();
-  }
+  }*/
 
   public async findFavorite(): Promise<DocumentType<FilmEntity>[]> {
     return this.filmModel
