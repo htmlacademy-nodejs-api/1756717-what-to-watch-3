@@ -61,7 +61,7 @@ export default class FilmService implements FilmServiceInterface {
       .find({genre: genre}, {}, {limit})
       .sort({postDate: SortType.Down})
       .populate(['userId'])
-      .exec();  
+      .exec();
   }
 
   public async incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null> {
