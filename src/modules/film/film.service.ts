@@ -8,6 +8,7 @@ import { Component } from '../../types/component.types.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import {DEFAULT_FILM_COUNT} from './film.constant.js';
 import {SortType} from '../../types/sort-type.enum.js';
+import mongoose from 'mongoose';
 
 
 @injectable()
@@ -27,7 +28,12 @@ export default class FilmService implements FilmServiceInterface {
   public async findById(filmId: string): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
       .findById(filmId)
-      .populate(['userId'])
+      .aggregate([
+        {
+          $match: {'_id': new mongoose.Types.ObjectId(filmId)}
+        }
+      ])
+      .populate('userId')
       .exec();
   }
 
@@ -35,10 +41,9 @@ export default class FilmService implements FilmServiceInterface {
     const limit = count ?? DEFAULT_FILM_COUNT;
 
     return this.filmModel
-      .find()
+      .find({}, {}, {limit})
       .sort({postDate: SortType.Down})
-      .limit(limit)
-      .populate(['userId'])
+      .populate('userId')
       .exec();
   }
 
@@ -51,7 +56,7 @@ export default class FilmService implements FilmServiceInterface {
   public async updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
       .findByIdAndUpdate(filmId, dto, {new: true})
-      .populate(['userId'])
+      .populate('userId')
       .exec();
   }
 
@@ -60,7 +65,7 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel
       .find({genre: genre}, {}, {limit})
       .sort({postDate: SortType.Down})
-      .populate(['userId'])
+      .populate('userId')
       .exec();
   }
 
@@ -71,17 +76,17 @@ export default class FilmService implements FilmServiceInterface {
       }}).exec();
   }
 
-  /*public async findPromo(): Promise<DocumentType<FilmEntity>> {
+  public async findPromo(): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .find()
-      .populate(['userId'])
+      .findOne()
+      .populate('userId')
       .exec();
-  }*/
+  }
 
   public async findFavorite(): Promise<DocumentType<FilmEntity>[]> {
     return this.filmModel
       .find()
-      .populate(['userId'])
+      .populate('userId')
       .exec();
   }
 
@@ -89,7 +94,8 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel
       .findByIdAndUpdate(filmId, {'$set': {
         isFavorite: status,
-      }})
+      }}, {new: true})
+      .populate('userId')
       .exec();
   }
 
@@ -97,6 +103,4 @@ export default class FilmService implements FilmServiceInterface {
     return (await this.filmModel
       .exists({_id: documentId})) !== null;
   }
-
-
 }
