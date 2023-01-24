@@ -4,10 +4,13 @@ import { Controller } from '../../common/controller/controller.js';
 import { Component } from '../../types/component.types.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
+import { FilmServiceInterface } from './film-service.interface.js';
 
 @injectable()
 export default class FilmController extends Controller {
-  constructor(@inject(Component.LoggerInterface) logger: LoggerInterface
+  constructor(
+    @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
   ) {
     super(logger);
 
@@ -17,11 +20,12 @@ export default class FilmController extends Controller {
     this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
   }
 
-  public index(req: Request, res: Response): void {
-    // Код обработчика
+  public async index(_req: Request, res: Response): Promise<void> {
+    const films = await this.filmService.find();
+    this.ok(res, films);
   }
 
-  public create(req: Request, res: Response): void {
+  public create(_req: Request, _res: Response): void {
     // Код обработчика
   }
 }
