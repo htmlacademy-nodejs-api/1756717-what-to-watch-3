@@ -1,19 +1,22 @@
 import { inject, injectable } from 'inversify';
+import express, { Express } from 'express';
 import { LoggerInterface } from '../common/logger/logger.interface.js';
 import { ConfigInterface } from '../common/config/config.interface.js';
 import { Component } from '../types/component.types.js';
 import { getURI } from '../utils/db.js';
 import { DatabaseInterface } from '../common/database-client/database.interface.js';
-import { CommentServiceInterface } from '../modules/comment/comment-service.interface.js';
 
 @injectable()
 export default class Application {
+  private expressApp: Express;
+
   constructor(
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
-    @inject(Component.DatabaseInterface) private databaseClient: DatabaseInterface,
-    @inject(Component.CommentServiceInterface) private commentService: CommentServiceInterface
-  ) {}
+    @inject(Component.DatabaseInterface) private databaseClient: DatabaseInterface
+  ) {
+    this.expressApp = express();
+  }
 
   public async init() {
     this.logger.info('Application initialization...');
@@ -29,7 +32,7 @@ export default class Application {
 
     await this.databaseClient.connect(uri);
 
-    const comment = await this.commentService.create({message: 'Lorem ipsum', rating: 10, postDate: new Date(), userId: '63cc15203c3a933d1b83b9e0', filmId: '63cc15203c3a933d1b83b9e2'});
-    console.log(comment);
+    this.expressApp.listen(this.config.get('PORT'));
+    this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
   }
 }
