@@ -6,7 +6,9 @@ import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
 import { FilmServiceInterface } from './film-service.interface.js';
 import FilmResponse from './response/film.response.js';
+import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../utils/common.js';
+import CreateFilmDto from './dto/create-film.dto.js';
 
 @injectable()
 export default class FilmController extends Controller {
@@ -28,7 +30,20 @@ export default class FilmController extends Controller {
     this.ok(res, filmResponse);
   }
 
-  public create(_req: Request, _res: Response): void {
-    // Код обработчика
+  public async create(
+    {body}: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
+    res: Response): Promise<void> {
+
+    const existFilm = await this.filmService.findByFilmName(body.name);
+
+    if (existFilm) {
+      const errorMessage = `Film with name «${body.name}» exists.`;
+      this.send(res, StatusCodes.UNPROCESSABLE_ENTITY, { error: errorMessage });
+      return this.logger.error(errorMessage);
+    }
+
+    const result = await this.filmService.create(body);
+    this.created(res, fillDTO(FilmResponse, result)
+    );
   }
 }

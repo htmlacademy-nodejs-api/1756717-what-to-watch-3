@@ -37,6 +37,12 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
+  public async findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null> {
+    return this.filmModel
+      .findOne({name: filmName})
+      .exec();
+  }
+
   public async find(count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
 
