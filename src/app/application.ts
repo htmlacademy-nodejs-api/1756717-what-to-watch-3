@@ -6,6 +6,7 @@ import { Component } from '../types/component.types.js';
 import { getURI } from '../utils/db.js';
 import { DatabaseInterface } from '../common/database-client/database.interface.js';
 import { ControllerInterface } from '../common/controller/controller.interface.js';
+import { ExceptionFilterInterface } from '../common/errors/exception-filter.interface.js';
 
 @injectable()
 export default class Application {
@@ -15,7 +16,8 @@ export default class Application {
     @inject(Component.LoggerInterface) private logger: LoggerInterface,
     @inject(Component.ConfigInterface) private config: ConfigInterface,
     @inject(Component.DatabaseInterface) private databaseClient: DatabaseInterface,
-    @inject(Component.FilmController) private filmController: ControllerInterface
+    @inject(Component.FilmController) private filmController: ControllerInterface,
+    @inject(Component.ExceptionFilterInterface) private exceptionFilter: ExceptionFilterInterface,
   ) {
     this.expressApp = express();
   }
@@ -26,6 +28,10 @@ export default class Application {
 
   public initMiddleware() {
     this.expressApp.use(express.json());
+  }
+
+  public initExceptionFilters() {
+    this.expressApp.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
   }
 
   public async init() {
@@ -44,6 +50,7 @@ export default class Application {
 
     this.initMiddleware();
     this.initRoutes();
+    this.initExceptionFilters();
     this.expressApp.listen(this.config.get('PORT'));
     this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
   }
