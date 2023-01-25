@@ -9,6 +9,7 @@ import FilmResponse from './response/film.response.js';
 import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../utils/common.js';
 import CreateFilmDto from './dto/create-film.dto.js';
+import HttpError from '../../common/errors/http-error.js';
 
 @injectable()
 export default class FilmController extends Controller {
@@ -37,9 +38,11 @@ export default class FilmController extends Controller {
     const existFilm = await this.filmService.findByFilmName(body.name);
 
     if (existFilm) {
-      const errorMessage = `Film with name «${body.name}» exists.`;
-      this.send(res, StatusCodes.UNPROCESSABLE_ENTITY, { error: errorMessage });
-      return this.logger.error(errorMessage);
+      throw new HttpError(
+        StatusCodes.UNPROCESSABLE_ENTITY,
+        `Film with name «${body.name}» exists.`,
+        'FilmController'
+      );
     }
 
     const result = await this.filmService.create(body);
