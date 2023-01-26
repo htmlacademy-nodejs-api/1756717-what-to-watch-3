@@ -32,6 +32,7 @@ export default class FilmController extends Controller {
     this.addRoute({path: '/:filmId', method: HttpMethod.Put, handler: this.update});
     this.addRoute({path: '/:filmId', method: HttpMethod.Delete, handler: this.delete});
     this.addRoute({path: '/genres/:genre', method: HttpMethod.Get, handler: this.findByGenre});
+    this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.findPromo});
   }
 
   public async index(
@@ -93,5 +94,10 @@ export default class FilmController extends Controller {
     const films = await this.filmService.findByGenre(params.genre, query.limit);
     const filmResponse = fillDTO(FilmResponse, films);
     this.ok(res, filmResponse);
+  }
+
+  public async findPromo(_req: Request, res: Response): Promise<void> {
+    const result = await this.filmService.findPromo();
+    this.ok(res, fillDTO(FilmResponse, result));
   }
 }
