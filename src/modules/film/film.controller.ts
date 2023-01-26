@@ -40,11 +40,11 @@ export default class FilmController extends Controller {
     req: Request<core.ParamsDictionary, unknown, unknown, RequestQuery>,
     res: Response
   ): Promise<void> {
-      const limit = req.query?.limit;
-      const films = await this.filmService.find(limit);
-      const filmResponse = fillDTO(FilmResponse, films);
-      this.ok(res, filmResponse);
-    }
+    const limit = req.query?.limit;
+    const films = await this.filmService.find(limit);
+    const filmResponse = fillDTO(FilmResponse, films);
+    this.ok(res, filmResponse);
+  }
 
   public async create(
     {body}: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
