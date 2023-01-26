@@ -8,6 +8,7 @@ import { Component } from '../../types/component.types.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import {DEFAULT_FILM_COUNT} from './film.constant.js';
 import {SortType} from '../../types/sort-type.enum.js';
+import { GenreType } from '../../types/genre-type.enum.js';
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
@@ -59,7 +60,7 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findByGenre(genre: string, count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findByGenre(genre: GenreType, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
       .find({genre: genre}, {}, {limit})

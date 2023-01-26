@@ -13,6 +13,7 @@ import CreateFilmDto from './dto/create-film.dto.js';
 import HttpError from '../../common/errors/http-error.js';
 import { RequestQuery } from '../../types/request-query.type.js';
 import { FilmParams } from '../../types/film-params.type.js';
+import { GenreParams } from '../../types/genre-params.type.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 
 @injectable()
@@ -30,6 +31,7 @@ export default class FilmController extends Controller {
     this.addRoute({path: '/:filmId', method: HttpMethod.Get, handler: this.findById});
     this.addRoute({path: '/:filmId', method: HttpMethod.Put, handler: this.update});
     this.addRoute({path: '/:filmId', method: HttpMethod.Delete, handler: this.delete});
+    this.addRoute({path: '/genres/:genre', method: HttpMethod.Get, handler: this.findByGenre});
   }
 
   public async index(
@@ -82,5 +84,14 @@ export default class FilmController extends Controller {
     const {params: { filmId }} = req;
     await this.filmService.deleteById(filmId);
     this.noContent(res, {});
+  }
+
+  public async findByGenre(
+    {params, query}: Request<core.ParamsDictionary | GenreParams, unknown, unknown, RequestQuery>,
+    res: Response
+  ): Promise<void> {
+    const films = await this.filmService.findByGenre(params.genre, query.limit);
+    const filmResponse = fillDTO(FilmResponse, films);
+    this.ok(res, filmResponse);
   }
 }
