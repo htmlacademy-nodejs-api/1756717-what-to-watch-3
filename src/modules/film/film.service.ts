@@ -8,8 +8,6 @@ import { Component } from '../../types/component.types.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import {DEFAULT_FILM_COUNT} from './film.constant.js';
 import {SortType} from '../../types/sort-type.enum.js';
-import mongoose from 'mongoose';
-
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
@@ -28,11 +26,6 @@ export default class FilmService implements FilmServiceInterface {
   public async findById(filmId: string): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
       .findById(filmId)
-      .aggregate([
-        {
-          $match: {'_id': new mongoose.Types.ObjectId(filmId)}
-        }
-      ])
       .populate('userId')
       .exec();
   }

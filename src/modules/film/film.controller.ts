@@ -25,6 +25,7 @@ export default class FilmController extends Controller {
 
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.index});
     this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
+    this.addRoute({path: '/:filmId', method: HttpMethod.Get, handler: this.findById});
   }
 
   public async index(
@@ -54,5 +55,13 @@ export default class FilmController extends Controller {
     const result = await this.filmService.create(body);
     this.created(res, fillDTO(FilmResponse, result)
     );
+  }
+
+  public async findById(req: Request, res: Response) {
+    const { params: {filmId} } = req;
+    console.log(filmId);
+
+    const result = await this.filmService.findById(filmId);
+    this.ok(res, fillDTO(FilmResponse, result));
   }
 }
