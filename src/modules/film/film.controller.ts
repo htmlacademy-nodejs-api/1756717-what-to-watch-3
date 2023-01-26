@@ -29,6 +29,7 @@ export default class FilmController extends Controller {
     this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
     this.addRoute({path: '/:filmId', method: HttpMethod.Get, handler: this.findById});
     this.addRoute({path: '/:filmId', method: HttpMethod.Put, handler: this.update});
+    this.addRoute({path: '/:filmId', method: HttpMethod.Delete, handler: this.delete});
   }
 
   public async index(
@@ -75,5 +76,11 @@ export default class FilmController extends Controller {
     const {body, params: { filmId }} = req;
     const result = await this.filmService.updateById(filmId, body);
     this.created(res, fillDTO(FilmResponse, result));
+  }
+
+  public async delete(req: Request, res: Response) {
+    const {params: { filmId }} = req;
+    await this.filmService.deleteById(filmId);
+    this.noContent(res, {});
   }
 }
