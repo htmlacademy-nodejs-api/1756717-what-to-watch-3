@@ -66,7 +66,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/films"
 
-  /films/{genre}:
+  /films/genres/{genre}:
     get:
       tags:
         - films
@@ -667,9 +667,9 @@ components:
       type: object
 
       properties:
-        userName:
+        email:
           type: string
-          example: Emilia
+          example: Emilia@outlook.com
 
         password:
           type: string
