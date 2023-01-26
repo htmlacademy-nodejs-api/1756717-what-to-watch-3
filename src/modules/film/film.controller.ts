@@ -12,6 +12,8 @@ import { fillDTO } from '../../utils/common.js';
 import CreateFilmDto from './dto/create-film.dto.js';
 import HttpError from '../../common/errors/http-error.js';
 import { RequestQuery } from '../../types/request-query.type.js';
+import { FilmParams } from '../../types/film-params.type.js';
+import UpdateFilmDto from './dto/update-film.dto.js';
 
 @injectable()
 export default class FilmController extends Controller {
@@ -26,6 +28,7 @@ export default class FilmController extends Controller {
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.index});
     this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
     this.addRoute({path: '/:filmId', method: HttpMethod.Get, handler: this.findById});
+    this.addRoute({path: '/:filmId', method: HttpMethod.Put, handler: this.update});
   }
 
   public async index(
@@ -63,5 +66,14 @@ export default class FilmController extends Controller {
 
     const result = await this.filmService.findById(filmId);
     this.ok(res, fillDTO(FilmResponse, result));
+  }
+
+  public async update(
+    req: Request<core.ParamsDictionary | FilmParams, Record<string, unknown>, UpdateFilmDto>,
+    res: Response
+  ) {
+    const {body, params: { filmId }} = req;
+    const result = await this.filmService.updateById(filmId, body);
+    this.created(res, fillDTO(FilmResponse, result));
   }
 }
