@@ -9,7 +9,6 @@ GET http://localhost:3123/api HTTP/1.1
 ## Получить список фильмов
 
 GET http://localhost:5000/films HTTP/1.1
-Content-Type: application/json
 
 ###
 
@@ -21,7 +20,7 @@ Content-Type: application/json
 {
   "name": "Moonlight",
   "postDate": "2023-01-24",
-  "userId": "63cf9089c72fba65b72e62e4",
+  "userId": "63cc15203c3a933d1b83b9e5",
   "description": "Identical twin gangsters Ronald and Reginald Kray terrorize London during the 1960s.",
   "genre": "Crime",
   "released": 2015,
@@ -43,32 +42,33 @@ Content-Type: application/json
 
 ## Получить фильм по id
 
-GET http://localhost:5000/films/63cf908ac72fba65b72e62ec HTTP/1.1
-Content-Type: application/json
+GET http://localhost:5000/films/63cc15203c3a933d1b83b9e2 HTTP/1.1
+
 
 ###
 
 ## Редактировать фильм
 
-PUT http://localhost:5000/films/63cf908ac72fba65b72e62ec HTTP/1.1
+PATCH http://localhost:5000/films/63d6db69b72db882e52ea80c HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Star wars"
+  "name": "Star wars",
+  "description": "Проверка обновления",
+  "genre": "Drama"
 }
 
 ###
 
 ## Удалить фильм
 
-DELETE http://localhost:5000/films/63cf908ac72fba65b72e62ec HTTP/1.1
+DELETE http://localhost:5000/films/63d6d7aa374553084bc60f09 HTTP/1.1
 
 ###
 
 ## Получить фильмы определенного жанра
 
-GET http://localhost:5000/films/genres/Crime HTTP/1.1
-Content-Type: application/json
+GET http://localhost:5000/films/genres/Drama HTTP/1.1
 
 ###
 
