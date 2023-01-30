@@ -19,6 +19,7 @@ import UpdateFilmDto from './dto/update-film.dto.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
 import CommentResponse from '../comment/response/comment.response.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
+import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 
 @injectable()
 export default class FilmController extends Controller {
@@ -32,7 +33,12 @@ export default class FilmController extends Controller {
     this.logger.info('Register routes for FilmController…');
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateFilmDto)]
+    });
     this.addRoute({
       path: '/:filmId',
       method: HttpMethod.Get,
