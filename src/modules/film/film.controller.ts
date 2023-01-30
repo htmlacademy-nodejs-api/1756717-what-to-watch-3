@@ -18,6 +18,7 @@ import { ParamsGetGenre } from '../../types/params-get-genre.type.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
 import CommentResponse from '../comment/response/comment.response.js';
+import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 
 @injectable()
 export default class FilmController extends Controller {
@@ -32,7 +33,12 @@ export default class FilmController extends Controller {
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
     this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:filmId', method: HttpMethod.Get, handler: this.show });
+    this.addRoute({
+      path: '/:filmId',
+      method: HttpMethod.Get,
+      handler: this.show,
+      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+    });
     this.addRoute({ path: '/:filmId', method: HttpMethod.Patch, handler: this.update });
     this.addRoute({ path: '/:filmId', method: HttpMethod.Delete, handler: this.delete });
     this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.getByGenre });
