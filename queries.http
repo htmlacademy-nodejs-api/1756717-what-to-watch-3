@@ -105,9 +105,9 @@ Content-Type: application/json
 
 {
   "message": "Как обстоят дела с коробками? Фирменная упаковка сохранена?",
-  "rating": 10,
+  "rating": 8.9,
   "postDate": "2023-01-27",
-  "filmId": "63d7979988c63632c72e92eb",
+  "filmId": "63d7fecee1408baefa9c0428",
   "userId": "63cc15203c3a933d1b83b9e0"
 }
 
