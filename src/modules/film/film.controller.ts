@@ -16,12 +16,15 @@ import { RequestQuery } from '../../types/request-query.type.js';
 import { ParamsGetFilm } from '../../types/params-get-film.type.js';
 import { ParamsGetGenre } from '../../types/params-get-genre.type.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
+import { CommentServiceInterface } from '../comment/comment-service.interface.js';
+import CommentResponse from '../comment/response/comment.response.js';
 
 @injectable()
 export default class FilmController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
     @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
+    @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface
   ) {
     super(logger);
 
@@ -35,6 +38,7 @@ export default class FilmController extends Controller {
     this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.getByGenre });
     this.addRoute({ path: '/promo', method: HttpMethod.Get, handler: this.getPromo });
     this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.getFavorite });
+    this.addRoute({ path: '/:filmId/comments', method: HttpMethod.Get, handler: this.getComments });
   }
 
   public async index(
@@ -116,6 +120,8 @@ export default class FilmController extends Controller {
       );
     }
 
+    await this.commentService.deleteByFilmId(filmId);
+
     this.noContent(res, film);
   }
 
@@ -135,5 +141,21 @@ export default class FilmController extends Controller {
   public async getFavorite(_req: Request, res: Response) {
     const result = await this.filmService.findFavorite();
     this.ok(res, fillDTO(ShortFilmResponse, result));
+  }
+
+  public async getComments(
+    {params}: Request<core.ParamsDictionary | ParamsGetFilm, object, object>,
+    res: Response
+  ): Promise<void> {
+    if (!await this.filmService.exists(params.filmId)) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Film with id ${params.filmId} not found.`,
+        'FilmController'
+      );
+    }
+
+    const comments = await this.commentService.findByFilmId(params.filmId);
+    this.ok(res, fillDTO(CommentResponse, comments));
   }
 }

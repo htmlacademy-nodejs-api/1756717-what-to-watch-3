@@ -62,7 +62,7 @@ Content-Type: application/json
 
 ## Удалить фильм
 
-DELETE http://localhost:5000/films/63d6d7aa374553084bc60f09 HTTP/1.1
+DELETE http://localhost:5000/films/63d7979988c63632c72e92eb HTTP/1.1
 
 ###
 
@@ -110,5 +110,10 @@ Content-Type: application/json
   "filmId": "63d7979988c63632c72e92eb",
   "userId": "63cc15203c3a933d1b83b9e0"
 }
+
+###
+
+## Список комментариев к фильму
+GET http://localhost:5000/films/63d7979988c63632c72e92eb/comments HTTP/1.1
 
 ###

@@ -254,8 +254,7 @@ paths:
         "404":
           description: Такой фильм не существует
 
-
-  /comments/{filmId}:
+  /films/{filmId}/comments:
     get:
       tags:
         - comments
@@ -282,6 +281,7 @@ paths:
         "404":
           description: Такой фильм не существует.
 
+  /comments:
     post:
       tags:
         - comments
