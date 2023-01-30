@@ -16,4 +16,5 @@ export interface FilmServiceInterface {
   findFavorite(): Promise<DocumentType<FilmEntity>[]>
   changeFavoriteStatus(filmId: string, status: number): Promise<DocumentType<FilmEntity> | null>;
   exists(documentId: string): Promise<boolean>;
+  countRating(filmId: string): Promise<DocumentType<FilmEntity> | null>;
 }

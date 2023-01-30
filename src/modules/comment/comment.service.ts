@@ -15,28 +15,6 @@ export default class CommentService implements CommentServiceInterface {
 
   public async create(dto: CreateCommentDto): Promise<DocumentType<CommentEntity>> {
     const comment = await this.commentModel.create(dto);
-    this.commentModel
-      .aggregate([
-        {
-          $lookup: {
-            from: 'films',
-            localField: 'filmId',
-            foreignField: '_id',
-            pipeline: [
-              { $project: { rating: 1 } }
-            ],
-            as: 'filmRating'
-          },
-        },
-        {
-          $addFields: {
-            'rating': {$avg: '$filmRating'}
-          },
-        },
-        {
-          $out: 'films'
-        },
-      ]);
     return comment.populate('userId');
   }
 
