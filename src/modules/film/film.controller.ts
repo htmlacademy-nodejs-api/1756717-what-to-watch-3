@@ -49,7 +49,10 @@ export default class FilmController extends Controller {
       path: '/:filmId',
       method: HttpMethod.Patch,
       handler: this.update,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new ValidateDtoMiddleware(UpdateFilmDto)
+      ]
     });
     this.addRoute({
       path: '/:filmId',
