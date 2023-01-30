@@ -39,12 +39,27 @@ export default class FilmController extends Controller {
       handler: this.show,
       middlewares: [new ValidateObjectIdMiddleware('filmId')]
     });
-    this.addRoute({ path: '/:filmId', method: HttpMethod.Patch, handler: this.update });
-    this.addRoute({ path: '/:filmId', method: HttpMethod.Delete, handler: this.delete });
+    this.addRoute({
+      path: '/:filmId',
+      method: HttpMethod.Patch,
+      handler: this.update,
+      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+    });
+    this.addRoute({
+      path: '/:filmId',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+    });
     this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.getByGenre });
     this.addRoute({ path: '/promo', method: HttpMethod.Get, handler: this.getPromo });
     this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.getFavorite });
-    this.addRoute({ path: '/:filmId/comments', method: HttpMethod.Get, handler: this.getComments });
+    this.addRoute({
+      path: '/:filmId/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+    });
   }
 
   public async index(
