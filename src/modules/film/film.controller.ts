@@ -44,7 +44,10 @@ export default class FilmController extends Controller {
       path: '/:filmId',
       method: HttpMethod.Get,
       handler: this.show,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
     });
     this.addRoute({
       path: '/:filmId',
@@ -52,14 +55,18 @@ export default class FilmController extends Controller {
       handler: this.update,
       middlewares: [
         new ValidateObjectIdMiddleware('filmId'),
-        new ValidateDtoMiddleware(UpdateFilmDto)
+        new ValidateDtoMiddleware(UpdateFilmDto),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
       ]
     });
     this.addRoute({
       path: '/:filmId',
       method: HttpMethod.Delete,
       handler: this.delete,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
     });
     this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.getByGenre });
     this.addRoute({ path: '/promo', method: HttpMethod.Get, handler: this.getPromo });
@@ -113,13 +120,6 @@ export default class FilmController extends Controller {
 
     const film = await this.filmService.findById(filmId);
 
-    if (!film) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Film with id ${filmId} not found.`,
-        'FilmController'
-      );
-    }
     this.ok(res, fillDTO(FilmResponse, film));
   }
 
@@ -129,13 +129,6 @@ export default class FilmController extends Controller {
   ): Promise<void> {
     const updatedFilm = await this.filmService.updateById(params.filmId, body);
 
-    if (!updatedFilm) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Film with id ${params.filmId} not found.`,
-        'FilmController'
-      );
-    }
     this.ok(res, fillDTO(FilmResponse, updatedFilm));
   }
 
@@ -145,14 +138,6 @@ export default class FilmController extends Controller {
   ): Promise<void> {
     const { filmId } = params;
     const film = await this.filmService.deleteById(filmId);
-
-    if (!film) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Film with id ${filmId} not found.`,
-        'FilmController'
-      );
-    }
 
     await this.commentService.deleteByFilmId(filmId);
 
