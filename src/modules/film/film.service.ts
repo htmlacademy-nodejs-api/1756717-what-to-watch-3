@@ -6,16 +6,17 @@ import { DocumentType, types } from '@typegoose/typegoose';
 import { FilmEntity } from './film.entity.js';
 import { Component } from '../../types/component.types.js';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
-import {DEFAULT_FILM_COUNT} from './film.constant.js';
-import {SortType} from '../../types/sort-type.enum.js';
+import { DEFAULT_FILM_COUNT } from './film.constant.js';
+import { SortType } from '../../types/sort-type.enum.js';
 import { GenreType } from '../../types/genre-type.enum.js';
+import mongoose from 'mongoose';
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
   constructor(
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
     @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>
-  ) {}
+  ) { }
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
     const result = await this.filmModel.create(dto);
@@ -33,7 +34,7 @@ export default class FilmService implements FilmServiceInterface {
 
   public async findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findOne({name: filmName})
+      .findOne({ name: filmName })
       .exec();
   }
 
@@ -41,8 +42,8 @@ export default class FilmService implements FilmServiceInterface {
     const limit = count ?? DEFAULT_FILM_COUNT;
 
     return this.filmModel
-      .find({}, {}, {limit})
-      .sort({postDate: SortType.Down})
+      .find({}, {}, { limit })
+      .sort({ postDate: SortType.Down })
       .populate('userId')
       .exec();
   }
@@ -55,7 +56,7 @@ export default class FilmService implements FilmServiceInterface {
 
   public async updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findByIdAndUpdate(filmId, dto, {new: true})
+      .findByIdAndUpdate(filmId, dto, { new: true })
       .populate('userId')
       .exec();
   }
@@ -63,17 +64,19 @@ export default class FilmService implements FilmServiceInterface {
   public async findByGenre(genre: GenreType, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
-      .find({genre: genre}, {}, {limit})
-      .sort({postDate: SortType.Down})
+      .find({ genre: genre }, {}, { limit })
+      .sort({ postDate: SortType.Down })
       .populate('userId')
       .exec();
   }
 
   public async incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findByIdAndUpdate(filmId, {'$inc': {
-        commentCount: 1,
-      }}).exec();
+      .findByIdAndUpdate(filmId, {
+        '$inc': {
+          commentsAmount: 1,
+        }
+      }).exec();
   }
 
   public async findPromo(): Promise<DocumentType<FilmEntity> | null> {
@@ -92,15 +95,39 @@ export default class FilmService implements FilmServiceInterface {
 
   public async changeFavoriteStatus(filmId: string, status: number): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findByIdAndUpdate(filmId, {'$set': {
-        isFavorite: status,
-      }}, {new: true})
+      .findByIdAndUpdate(filmId, {
+        '$set': {
+          isFavorite: status,
+        }
+      }, { new: true })
       .populate('userId')
       .exec();
   }
 
   public async exists(documentId: string): Promise<boolean> {
     return (await this.filmModel
-      .exists({_id: documentId})) !== null;
+      .exists({ _id: documentId })) !== null;
+  }
+
+  public async countRating(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+    this.filmModel
+      .aggregate([
+        {
+          $match: {'_id': new mongoose.Types.ObjectId(filmId)},
+        },
+        {
+          $lookup: {
+            from: 'comments',
+            localField: '_id',
+            foreignField: 'filmId',
+            as: 'commentsData'
+          },
+        },
+        {
+          $addFields:
+            { rating: { $avg: '$commentsData.rating' } }
+        },
+      ]);
+    return this.filmModel.findById(filmId);
   }
 }

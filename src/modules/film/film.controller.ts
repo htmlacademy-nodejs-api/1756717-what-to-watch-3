@@ -7,33 +7,68 @@ import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { HttpMethod } from '../../types/http-method.enum.js';
 import { FilmServiceInterface } from './film-service.interface.js';
 import FilmResponse from './response/film.response.js';
+import ShortFilmResponse from './response/short-film.response.js';
 import { StatusCodes } from 'http-status-codes';
 import { fillDTO } from '../../utils/common.js';
 import CreateFilmDto from './dto/create-film.dto.js';
 import HttpError from '../../common/errors/http-error.js';
 import { RequestQuery } from '../../types/request-query.type.js';
-import { FilmParams } from '../../types/film-params.type.js';
-import { GenreParams } from '../../types/genre-params.type.js';
+import { ParamsGetFilm } from '../../types/params-get-film.type.js';
+import { ParamsGetGenre } from '../../types/params-get-genre.type.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
+import { CommentServiceInterface } from '../comment/comment-service.interface.js';
+import CommentResponse from '../comment/response/comment.response.js';
+import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
+import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 
 @injectable()
 export default class FilmController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
     @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
+    @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface
   ) {
     super(logger);
 
-    this.logger.info('Register routes for CategoryController…');
+    this.logger.info('Register routes for FilmController…');
 
-    this.addRoute({path: '/', method: HttpMethod.Get, handler: this.index});
-    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
-    this.addRoute({path: '/:filmId', method: HttpMethod.Get, handler: this.findById});
-    this.addRoute({path: '/:filmId', method: HttpMethod.Put, handler: this.update});
-    this.addRoute({path: '/:filmId', method: HttpMethod.Delete, handler: this.delete});
-    this.addRoute({path: '/genres/:genre', method: HttpMethod.Get, handler: this.findByGenre});
-    this.addRoute({path: '/promo', method: HttpMethod.Get, handler: this.findPromo});
-    this.addRoute({path: '/favorite', method: HttpMethod.Get, handler: this.findFavorite});
+    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateFilmDto)]
+    });
+    this.addRoute({
+      path: '/:filmId',
+      method: HttpMethod.Get,
+      handler: this.show,
+      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+    });
+    this.addRoute({
+      path: '/:filmId',
+      method: HttpMethod.Patch,
+      handler: this.update,
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new ValidateDtoMiddleware(UpdateFilmDto)
+      ]
+    });
+    this.addRoute({
+      path: '/:filmId',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+    });
+    this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.getByGenre });
+    this.addRoute({ path: '/promo', method: HttpMethod.Get, handler: this.getPromo });
+    this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.getFavorite });
+    this.addRoute({
+      path: '/:filmId/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+    });
   }
 
   public async index(
@@ -42,13 +77,13 @@ export default class FilmController extends Controller {
   ): Promise<void> {
     const limit = req.query?.limit;
     const films = await this.filmService.find(limit);
-    const filmResponse = fillDTO(FilmResponse, films);
-    this.ok(res, filmResponse);
+    this.ok(res, fillDTO(ShortFilmResponse, films));
   }
 
   public async create(
-    {body}: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
-    res: Response): Promise<void> {
+    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
+    res: Response
+  ): Promise<void> {
 
     const existFilm = await this.filmService.findByFilmName(body.name);
 
@@ -61,49 +96,96 @@ export default class FilmController extends Controller {
     }
 
     const result = await this.filmService.create(body);
-    this.created(res, fillDTO(FilmResponse, result)
+    const film = await this.filmService.findById(result.id);
+    this.created(res, fillDTO(FilmResponse, film)
     );
   }
 
-  public async findById(req: Request, res: Response) {
-    const { params: {filmId} } = req;
-    console.log(filmId);
+  public async show(
+    { params }: Request<core.ParamsDictionary | ParamsGetFilm>,
+    res: Response
+  ): Promise<void> {
+    const { filmId } = params;
 
-    const result = await this.filmService.findById(filmId);
-    this.ok(res, fillDTO(FilmResponse, result));
+    const film = await this.filmService.findById(filmId);
+
+    if (!film) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Film with id ${filmId} not found.`,
+        'FilmController'
+      );
+    }
+    this.ok(res, fillDTO(FilmResponse, film));
   }
 
   public async update(
-    req: Request<core.ParamsDictionary | FilmParams, Record<string, unknown>, UpdateFilmDto>,
+    {body, params}: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
     res: Response
-  ) {
-    const {body, params: { filmId }} = req;
-    const result = await this.filmService.updateById(filmId, body);
-    this.created(res, fillDTO(FilmResponse, result));
+  ): Promise<void> {
+    const updatedFilm = await this.filmService.updateById(params.filmId, body);
+
+    if (!updatedFilm) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Film with id ${params.filmId} not found.`,
+        'FilmController'
+      );
+    }
+    this.ok(res, fillDTO(FilmResponse, updatedFilm));
   }
 
-  public async delete(req: Request, res: Response) {
-    const {params: { filmId }} = req;
-    await this.filmService.deleteById(filmId);
-    this.noContent(res, {});
+  public async delete(
+    {params}: Request<core.ParamsDictionary | ParamsGetFilm>,
+    res: Response
+  ): Promise<void> {
+    const { filmId } = params;
+    const film = await this.filmService.deleteById(filmId);
+
+    if (!film) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Film with id ${filmId} not found.`,
+        'FilmController'
+      );
+    }
+
+    await this.commentService.deleteByFilmId(filmId);
+
+    this.noContent(res, film);
   }
 
-  public async findByGenre(
-    {params, query}: Request<core.ParamsDictionary | GenreParams, unknown, unknown, RequestQuery>,
+  public async getByGenre(
+    { params, query }: Request<core.ParamsDictionary | ParamsGetGenre, unknown, unknown, RequestQuery>,
     res: Response
   ): Promise<void> {
     const films = await this.filmService.findByGenre(params.genre, query.limit);
-    const filmResponse = fillDTO(FilmResponse, films);
-    this.ok(res, filmResponse);
+    this.ok(res, fillDTO(ShortFilmResponse, films));
   }
 
-  public async findPromo(_req: Request, res: Response): Promise<void> {
+  public async getPromo(_req: Request, res: Response): Promise<void> {
     const result = await this.filmService.findPromo();
     this.ok(res, fillDTO(FilmResponse, result));
   }
 
-  public async findFavorite(_req: Request, res: Response) {
+  public async getFavorite(_req: Request, res: Response) {
     const result = await this.filmService.findFavorite();
-    this.ok(res, fillDTO(FilmResponse, result));
+    this.ok(res, fillDTO(ShortFilmResponse, result));
+  }
+
+  public async getComments(
+    {params}: Request<core.ParamsDictionary | ParamsGetFilm, object, object>,
+    res: Response
+  ): Promise<void> {
+    if (!await this.filmService.exists(params.filmId)) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Film with id ${params.filmId} not found.`,
+        'FilmController'
+      );
+    }
+
+    const comments = await this.commentService.findByFilmId(params.filmId);
+    this.ok(res, fillDTO(CommentResponse, comments));
   }
 }

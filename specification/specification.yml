@@ -60,7 +60,7 @@ paths:
 
       responses:
         "200":
-          description: Возвращает массив фильмов. 
+          description: Возвращает массив фильмов.
           content:
             application/json:
               schema:
@@ -91,7 +91,7 @@ paths:
 
       responses:
         "200":
-          description: Возвращает массив фильмов определённого жанра. 
+          description: Возвращает массив фильмов определённого жанра.
           content:
             application/json:
               schema:
@@ -102,7 +102,7 @@ paths:
 
 
   /films/{filmId}:
-    put:
+    patch:
       tags:
         - films
       summary: Редактирование фильма
@@ -127,7 +127,7 @@ paths:
         required: true
 
       responses:
-        "201":
+        "200":
           description: Фильм изменён. Объект фильма.
           content:
             application/json:
@@ -145,7 +145,7 @@ paths:
 
         "404":
           description: Такой фильм не существует
-    
+
     delete:
       tags:
         - films
@@ -173,7 +173,7 @@ paths:
 
       responses:
         "200":
-          description: Возвращает детальную информацию по фильму. 
+          description: Возвращает детальную информацию по фильму.
           content:
             application/json:
               schema:
@@ -182,7 +182,7 @@ paths:
         "404":
           description: Такой фильм не существует
 
-  
+
   /films/promo:
     get:
       tags:
@@ -192,7 +192,7 @@ paths:
 
       responses:
         "200":
-          description: Возвращает объект промо-фильма. 
+          description: Возвращает объект промо-фильма.
           content:
             application/json:
               schema:
@@ -207,14 +207,14 @@ paths:
 
       responses:
         "200":
-          description: Возвращает массив фильмов, добавленных в список "К просмотру" 
+          description: Возвращает массив фильмов, добавленных в список "К просмотру"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/films"
 
         "401":
-          description: Пользователь не авторизован. 
+          description: Пользователь не авторизован.
 
   /films/favorite/{filmId}/{status}:
     post:
@@ -249,13 +249,12 @@ paths:
                 $ref: "#/components/schemas/film"
 
         "401":
-          description: Пользователь не авторизован. 
+          description: Пользователь не авторизован.
 
         "404":
           description: Такой фильм не существует
 
-
-  /comments/{filmId}:
+  /films/{filmId}/comments:
     get:
       tags:
         - comments
@@ -282,7 +281,8 @@ paths:
         "404":
           description: Такой фильм не существует.
 
-    post: 
+  /comments:
+    post:
       tags:
         - comments
       summary: Добавление нового комментария к определённому фильму
@@ -321,7 +321,7 @@ paths:
 
         "404":
           description: Такой фильм не существует
-      
+
 
   /users/register:
     post:
@@ -484,7 +484,7 @@ components:
 
         backgroundColor:
           type: string
-          example: '#B9B27E'    
+          example: '#B9B27E'
 
     film:
       type: object
@@ -555,12 +555,12 @@ components:
 
         backgroundColor:
           type: string
-          example: '#B9B27E' 
+          example: '#B9B27E'
 
 
     films:
       type: array
-      items: 
+      items:
         type: object
         properties:
           name:
@@ -575,7 +575,7 @@ components:
           genre:
             type: string
             example: Drama
-        
+
           previewVideoLink:
             type: string
             example: https://11.react.pages.academy/static/film/video/traffic.mp4
@@ -612,11 +612,11 @@ components:
 
           userId:
             type: string
-            example: 6317c3d6a54ab1061c6434ea  
+            example: 6317c3d6a54ab1061c6434ea
 
     createComment:
       type: object
-      
+
       properties:
           message:
             type: string
@@ -624,7 +624,7 @@ components:
 
           rating:
             type: number
-            example: 7.8    
+            example: 7.8
 
     comment:
       type: object
@@ -644,7 +644,7 @@ components:
 
         userId:
           type: string
-          example: 6317c3d6a54ab1061c6434ea 
+          example: 6317c3d6a54ab1061c6434ea
 
 
     createUser:
