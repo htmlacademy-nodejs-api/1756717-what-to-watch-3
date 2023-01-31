@@ -20,6 +20,7 @@ import { CommentServiceInterface } from '../comment/comment-service.interface.js
 import CommentResponse from '../comment/response/comment.response.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
+import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 
 @injectable()
 export default class FilmController extends Controller {
@@ -67,7 +68,10 @@ export default class FilmController extends Controller {
       path: '/:filmId/comments',
       method: HttpMethod.Get,
       handler: this.getComments,
-      middlewares: [new ValidateObjectIdMiddleware('filmId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('filmId'),
+        new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
     });
   }
 
@@ -177,13 +181,6 @@ export default class FilmController extends Controller {
     {params}: Request<core.ParamsDictionary | ParamsGetFilm, object, object>,
     res: Response
   ): Promise<void> {
-    if (!await this.filmService.exists(params.filmId)) {
-      throw new HttpError(
-        StatusCodes.NOT_FOUND,
-        `Film with id ${params.filmId} not found.`,
-        'FilmController'
-      );
-    }
 
     const comments = await this.commentService.findByFilmId(params.filmId);
     this.ok(res, fillDTO(CommentResponse, comments));
