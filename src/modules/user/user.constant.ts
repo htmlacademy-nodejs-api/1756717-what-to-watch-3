@@ -11,3 +11,5 @@ export const AVATAR_VALIDATION_MESSAGE = 'avatarUrl field must be a link on .jpg
 export const PASSWORD_VALIDATION_MESSAGE = 'Min length is 6, max length is 12';
 
 export const PASSWORD_REQUIRED_MESSAGE = 'password is required';
+
+export const JWT_ALGORITM = 'HS256';
