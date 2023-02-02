@@ -10,7 +10,6 @@ import { DEFAULT_FILM_COUNT } from './film.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { GenreType } from '../../types/genre-type.enum.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
-/*import mongoose from 'mongoose';*/
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
@@ -83,7 +82,7 @@ export default class FilmService implements FilmServiceInterface {
 
   public async findPromo(): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findOne({_id: this.configService.get('PROMO_ID')})
+      .findOne({ _id: this.configService.get('PROMO_ID') })
       .populate('userId')
       .exec();
   }
@@ -111,24 +110,16 @@ export default class FilmService implements FilmServiceInterface {
       .exists({ _id: documentId })) !== null;
   }
 
-  /*public async countRating(filmId: string): Promise<DocumentType<FilmEntity> | null> {
-    return this.filmModel
-      .aggregate([
-        {
-          $match: {'_id': new mongoose.Types.ObjectId(filmId)},
-        },
-        {
-          $lookup: {
-            from: 'comments',
-            localField: '_id',
-            foreignField: 'filmId',
-            as: 'commentsData'
-          },
-        },
-        {
-          $addFields:
-            { rating: { $avg: '$commentsData.rating' } }
-        },
-      ]);
-  }*/
+  public async countRating(filmId: string, rating: number): Promise<DocumentType<FilmEntity> | null> {
+    const movie = await this.findById(filmId);
+    const oldRating = movie?.rating ?? 0;
+    const ratingsCount = movie?.commentsAmount ?? 0;
+    const newRating = Number(((rating + oldRating * ratingsCount) / (ratingsCount + 1)).toFixed(1));
+
+    return await this.updateById(
+      filmId,
+      {
+        rating: newRating
+      });
+  }
 }
