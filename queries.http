@@ -81,7 +81,7 @@ Content-Type: application/json
 {
   "userName": "Jack",
   "email": "torans@overlook.net",
-  "avatarUrl": "torrance",
+  "avatarUrl": "torrance.png",
   "password": "shining"
 }
 
@@ -94,7 +94,7 @@ Content-Type: application/json
 
 {
   "email": "torans@overlook.net",
-  "password": "123456"
+  "password": "shining"
 }
 
 ###
