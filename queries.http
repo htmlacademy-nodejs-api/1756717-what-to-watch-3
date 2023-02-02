@@ -16,6 +16,7 @@ GET http://localhost:5000/films HTTP/1.1
 
 POST http://localhost:5000/films HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTM0NzcyNiwiZXhwIjoxNjc1NTIwNTI2fQ.7Vb4nBQqNoS7n_qoJQRKYDV0n8SlduoyRxp2KiV-Svw
 
 {
   "name": "Moonlight",

@@ -105,10 +105,11 @@ export default class FilmController extends Controller {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
+    req: Request<Record<string, unknown>, Record<string, unknown>, CreateFilmDto>,
     res: Response
   ): Promise<void> {
 
+    const { body, user } = req;
     const existFilm = await this.filmService.findByFilmName(body.name);
 
     if (existFilm) {
@@ -119,7 +120,7 @@ export default class FilmController extends Controller {
       );
     }
 
-    const result = await this.filmService.create(body);
+    const result = await this.filmService.create({...body, userId: user.id});
     const film = await this.filmService.findById(result.id);
     this.created(res, fillDTO(FilmResponse, film)
     );
