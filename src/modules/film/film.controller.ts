@@ -44,6 +44,15 @@ export default class FilmController extends Controller {
         new ValidateDtoMiddleware(CreateFilmDto)
       ]
     });
+    this.addRoute({ path: '/promo', method: HttpMethod.Get, handler: this.getPromo });
+    this.addRoute({
+      path: '/favorite',
+      method: HttpMethod.Get,
+      handler: this.getFavorite,
+      middlewares: [
+        new PrivateRouteMiddleware()
+      ]
+    });
     this.addRoute({
       path: '/:filmId',
       method: HttpMethod.Get,
@@ -75,15 +84,6 @@ export default class FilmController extends Controller {
       ]
     });
     this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.getByGenre });
-    this.addRoute({ path: '/promo', method: HttpMethod.Get, handler: this.getPromo });
-    this.addRoute({
-      path: '/favorite',
-      method: HttpMethod.Get,
-      handler: this.getFavorite,
-      middlewares: [
-        new PrivateRouteMiddleware()
-      ]
-    });
     this.addRoute({
       path: '/:filmId/comments',
       method: HttpMethod.Get,

@@ -73,6 +73,12 @@ GET http://localhost:5000/films/genres/Drama HTTP/1.1
 
 ###
 
+## Получить промо-фильм
+
+GET http://localhost:5000/films/promo HTTP/1.1
+
+###
+
 # Пользователи
 ## Регистрация пользователя
 

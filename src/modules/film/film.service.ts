@@ -9,13 +9,15 @@ import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { DEFAULT_FILM_COUNT } from './film.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { GenreType } from '../../types/genre-type.enum.js';
-import mongoose from 'mongoose';
+import { ConfigInterface } from '../../common/config/config.interface.js';
+/*import mongoose from 'mongoose';*/
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
   constructor(
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
-    @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>
+    @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>,
+    @inject(Component.ConfigInterface) private readonly configService: ConfigInterface,
   ) { }
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
@@ -64,7 +66,7 @@ export default class FilmService implements FilmServiceInterface {
   public async findByGenre(genre: GenreType, count?: number): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
     return this.filmModel
-      .find({ genre: genre }, {}, { limit })
+      .find({ genre }, {}, { limit })
       .sort({ postDate: SortType.Down })
       .populate('userId')
       .exec();
@@ -81,7 +83,7 @@ export default class FilmService implements FilmServiceInterface {
 
   public async findPromo(): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findOne()
+      .findOne({_id: this.configService.get('PROMO_ID')})
       .populate('userId')
       .exec();
   }
@@ -109,8 +111,8 @@ export default class FilmService implements FilmServiceInterface {
       .exists({ _id: documentId })) !== null;
   }
 
-  public async countRating(filmId: string): Promise<DocumentType<FilmEntity> | null> {
-    this.filmModel
+  /*public async countRating(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+    return this.filmModel
       .aggregate([
         {
           $match: {'_id': new mongoose.Types.ObjectId(filmId)},
@@ -128,6 +130,5 @@ export default class FilmService implements FilmServiceInterface {
             { rating: { $avg: '$commentsData.rating' } }
         },
       ]);
-    return this.filmModel.findById(filmId);
-  }
+  }*/
 }
