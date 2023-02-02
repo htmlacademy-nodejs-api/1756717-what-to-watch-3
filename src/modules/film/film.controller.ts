@@ -21,6 +21,7 @@ import CommentResponse from '../comment/response/comment.response.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
+import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
 
 @injectable()
 export default class FilmController extends Controller {
@@ -38,7 +39,10 @@ export default class FilmController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateFilmDto)]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDtoMiddleware(CreateFilmDto)
+      ]
     });
     this.addRoute({
       path: '/:filmId',
@@ -54,6 +58,7 @@ export default class FilmController extends Controller {
       method: HttpMethod.Patch,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('filmId'),
         new ValidateDtoMiddleware(UpdateFilmDto),
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
@@ -64,13 +69,21 @@ export default class FilmController extends Controller {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('filmId'),
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
       ]
     });
     this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.getByGenre });
     this.addRoute({ path: '/promo', method: HttpMethod.Get, handler: this.getPromo });
-    this.addRoute({ path: '/favorite', method: HttpMethod.Get, handler: this.getFavorite });
+    this.addRoute({
+      path: '/favorite',
+      method: HttpMethod.Get,
+      handler: this.getFavorite,
+      middlewares: [
+        new PrivateRouteMiddleware()
+      ]
+    });
     this.addRoute({
       path: '/:filmId/comments',
       method: HttpMethod.Get,
