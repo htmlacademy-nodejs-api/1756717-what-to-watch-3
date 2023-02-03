@@ -1,10 +1,10 @@
 import { IsEmail, IsString } from 'class-validator';
-import { EMAIL_VALIDATION_MESSAGE, PASSWORD_REQUIRED_MESSAGE } from '../user.constant.js';
+import { userRequiredMessages, userValidationMessages } from '../user.constant.js';
 
 export default class LoginUserDto {
-  @IsEmail({}, {message: EMAIL_VALIDATION_MESSAGE})
+  @IsEmail({}, {message: userValidationMessages.EMAIL})
   public email!: string;
 
-  @IsString({message: PASSWORD_REQUIRED_MESSAGE})
+  @IsString({message: userRequiredMessages.PASSWORD})
   public password!: string;
 }
