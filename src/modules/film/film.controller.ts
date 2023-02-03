@@ -54,6 +54,14 @@ export default class FilmController extends Controller {
       ]
     });
     this.addRoute({
+      path: '/favorite/:filmId/:status',
+      method: HttpMethod.Post,
+      handler: this.changeFavoriteStatus,
+      middlewares: [
+        new PrivateRouteMiddleware()
+      ]
+    });
+    this.addRoute({
       path: '/:filmId',
       method: HttpMethod.Get,
       handler: this.show,
@@ -183,5 +191,15 @@ export default class FilmController extends Controller {
 
     const comments = await this.commentService.findByFilmId(params.filmId);
     this.ok(res, fillDTO(CommentResponse, comments));
+  }
+
+  public async changeFavoriteStatus(
+    {params}: Request<core.ParamsDictionary | ParamsGetFilm>,
+    res: Response
+  ): Promise<void> {
+    const { filmId, status } = params;
+    const film = await this.filmService.changeFavoriteStatus(filmId, Number(status));
+
+    this.ok(res, fillDTO(FilmResponse, film));
   }
 }

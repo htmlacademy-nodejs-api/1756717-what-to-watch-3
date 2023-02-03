@@ -19,7 +19,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTM0NzcyNiwiZXhwIjoxNjc1NTIwNTI2fQ.7Vb4nBQqNoS7n_qoJQRKYDV0n8SlduoyRxp2KiV-Svw
 
 {
-  "name": "Moonlight",
+  "name": "Moonlight Sonata",
   "postDate": "2023-01-24",
   "userId": "63cc15203c3a933d1b83b9e5",
   "description": "Identical twin gangsters Ronald and Reginald Kray terrorize London during the 1960s.",
@@ -76,6 +76,12 @@ GET http://localhost:5000/films/genres/Drama HTTP/1.1
 
 GET http://localhost:5000/films/promo HTTP/1.1
 
+###
+
+## Изменить статус "К просмотру" у фильма
+
+POST http://localhost:5000/films/favorite/63dd20d1849f9386ac3b3f27/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTQzNzg1NSwiZXhwIjoxNjc1NjEwNjU1fQ.bCSJ4DoxlfYueZqpkUvhidBUZr6a70mFUeFgxZ5fS44
 ###
 
 # Пользователи
