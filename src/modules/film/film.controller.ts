@@ -22,13 +22,15 @@ import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-ob
 import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
+import { WatchlistServiceInterface } from '../watchlist/watchlist-service.interface.js';
 
 @injectable()
 export default class FilmController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
     @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
-    @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface
+    @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
+    @inject(Component.WatchlistServiceInterface) private readonly watchlistService: WatchlistServiceInterface
   ) {
     super(logger);
 
@@ -128,7 +130,7 @@ export default class FilmController extends Controller {
       );
     }
 
-    const result = await this.filmService.create({...body, userId: user.id});
+    const result = await this.filmService.create({ ...body, userId: user.id });
     const film = await this.filmService.findById(result.id);
     this.created(res, fillDTO(FilmResponse, film)
     );
@@ -146,7 +148,7 @@ export default class FilmController extends Controller {
   }
 
   public async update(
-    {body, params}: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
+    { body, params }: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
     res: Response
   ): Promise<void> {
     const updatedFilm = await this.filmService.updateById(params.filmId, body);
@@ -155,7 +157,7 @@ export default class FilmController extends Controller {
   }
 
   public async delete(
-    {params}: Request<core.ParamsDictionary | ParamsGetFilm>,
+    { params }: Request<core.ParamsDictionary | ParamsGetFilm>,
     res: Response
   ): Promise<void> {
     const { filmId } = params;
@@ -185,7 +187,7 @@ export default class FilmController extends Controller {
   }
 
   public async getComments(
-    {params}: Request<core.ParamsDictionary | ParamsGetFilm, object, object>,
+    { params }: Request<core.ParamsDictionary | ParamsGetFilm, object, object>,
     res: Response
   ): Promise<void> {
 
@@ -194,12 +196,16 @@ export default class FilmController extends Controller {
   }
 
   public async changeFavoriteStatus(
-    {params}: Request<core.ParamsDictionary | ParamsGetFilm>,
+    req: Request<core.ParamsDictionary | ParamsGetFilm>,
     res: Response
   ): Promise<void> {
-    const { filmId, status } = params;
-    const film = await this.filmService.changeFavoriteStatus(filmId, Number(status));
-
+    const { params, user } = req;
+    const film = await this.filmService.changeFavoriteStatus(params.filmId, Number(params.status));
+    if (params.status) {
+      await this.watchlistService.create(params.filmId, user.id);
+    } else {
+      await this.watchlistService.delete(params.filmId, user.id);
+    }
     this.ok(res, fillDTO(FilmResponse, film));
   }
 }

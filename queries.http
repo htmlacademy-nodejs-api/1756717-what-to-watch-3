@@ -80,8 +80,8 @@ GET http://localhost:5000/films/promo HTTP/1.1
 
 ## Изменить статус "К просмотру" у фильма
 
-POST http://localhost:5000/films/favorite/63dd20d1849f9386ac3b3f27/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTQzNzg1NSwiZXhwIjoxNjc1NjEwNjU1fQ.bCSJ4DoxlfYueZqpkUvhidBUZr6a70mFUeFgxZ5fS44
+POST http://localhost:5000/films/favorite/63cc15203c3a933d1b83b9e2/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTQ1NTU4NiwiZXhwIjoxNjc1NjI4Mzg2fQ.8P0aQ1YVPMLqV2Vd7z8giyBA0rp1oCptWA_WauuSlV8
 ###
 
 # Пользователи
@@ -91,9 +91,9 @@ POST http://localhost:5000/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "userName": "Jack",
-  "email": "torans@overlook.net",
-  "avatarUrl": "torrance.png",
+  "userName": "Ann",
+  "email": "ann@overlook.net",
+  "avatarUrl": "ann.png",
   "password": "shining"
 }
 
@@ -105,7 +105,7 @@ POST http://localhost:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "torans@overlook.net",
+  "email": "ann@overlook.net",
   "password": "shining"
 }
 
