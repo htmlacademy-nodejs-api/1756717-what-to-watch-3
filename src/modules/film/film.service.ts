@@ -9,14 +9,12 @@ import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { DEFAULT_FILM_COUNT } from './film.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { GenreType } from '../../types/genre-type.enum.js';
-import { ConfigInterface } from '../../common/config/config.interface.js';
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
   constructor(
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
-    @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>,
-    @inject(Component.ConfigInterface) private readonly configService: ConfigInterface,
+    @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>
   ) { }
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
@@ -82,7 +80,7 @@ export default class FilmService implements FilmServiceInterface {
 
   public async findPromo(): Promise<DocumentType<FilmEntity> | null> {
     return this.filmModel
-      .findOne({ _id: this.configService.get('PROMO_ID') })
+      .findOne({ isPromo: true })
       .populate('userId')
       .exec();
   }

@@ -93,7 +93,6 @@ npm run start:dev
 * DB_NAME=course-njs - имя базы данных
 * UPLOAD_DIRECTORY=upload - путь к директории, в которую сохраняются файлы от клиентов
 * JWT_SECRET=vbvnc128nfdk4 - строка, которая используется в процессе шифрования при подготовке токена
-* PROMO_ID=bvhdn183bcikcnxdinc1819 - id промо-фильма
 
 ## Структура проекта
 

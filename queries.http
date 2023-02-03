@@ -50,13 +50,12 @@ GET http://localhost:5000/films/63cc15203c3a933d1b83b9e2 HTTP/1.1
 
 ## Редактировать фильм
 
-PATCH http://localhost:5000/films/63d6db69b72db882e52ea80c HTTP/1.1
+PATCH http://localhost:5000/films/63cc15203c3a933d1b83b9e2 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTQzNjAwOCwiZXhwIjoxNjc1NjA4ODA4fQ.-J6ecrijT4m3xu8O9P8E_Dtu6GsxcVWvoknU00VI3lI
 
 {
-  "name": "Star wars",
-  "description": "Проверка обновления",
-  "genre": "Drama"
+  "isPromo": "true"
 }
 
 ###
