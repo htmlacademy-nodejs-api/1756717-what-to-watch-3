@@ -23,4 +23,7 @@ export default class ShortFilmResponse {
 
   @Expose()
   public posterImage!: string;
+
+  @Expose()
+  public isFavorite!: boolean;
 }

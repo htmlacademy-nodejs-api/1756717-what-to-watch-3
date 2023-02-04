@@ -6,7 +6,7 @@ import { DocumentExistsInterface } from '../../types/document-exists.interface.j
 
 export interface FilmServiceInterface extends DocumentExistsInterface{
   create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>>;
-  findById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  findById(filmId: string, userId?: string): Promise<DocumentType<FilmEntity> | null>;
   findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null>;
   find(count?: number): Promise<DocumentType<FilmEntity>[]>;
   deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null>;

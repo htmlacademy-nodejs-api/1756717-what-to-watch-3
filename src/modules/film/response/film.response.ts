@@ -50,4 +50,7 @@ export default class FilmResponse {
 
   @Expose()
   public backgroundColor!: string;
+
+  @Expose()
+  public isFavorite!: boolean;
 }

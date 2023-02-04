@@ -45,7 +45,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 
 GET http://localhost:5000/films/63cc15203c3a933d1b83b9e2 HTTP/1.1
 
-
 ###
 
 ## Редактировать фильм
@@ -86,7 +85,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiL
 
 ## Изменить статус "К просмотру" у фильма
 
-POST http://localhost:5000/films/favorite/63d7fecee1408baefa9c0428/1 HTTP/1.1
+POST http://localhost:5000/films/favorite/63cc15203c3a933d1b83b9e7/1 HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTU0MjM2MywiZXhwIjoxNjc1NzE1MTYzfQ.oFo6FgznZIkBk_c3e1qmmtbmb_D0v5SXjLFx10BcWRI
 ###
 
@@ -111,7 +110,7 @@ POST http://localhost:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ann@overlook.net",
+  "email": "torans@overlook.net",
   "password": "shining"
 }
 

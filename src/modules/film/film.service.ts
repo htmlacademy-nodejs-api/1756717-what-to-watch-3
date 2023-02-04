@@ -10,6 +10,7 @@ import { DEFAULT_FILM_COUNT } from './film.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { GenreType } from '../../types/genre-type.enum.js';
 import { WatchlistEntity } from '../watchlist/watchlist.entity.js';
+import { Types } from 'mongoose';
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
@@ -26,11 +27,38 @@ export default class FilmService implements FilmServiceInterface {
     return result;
   }
 
-  public async findById(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+  public async findById(filmId: string, userId?: string): Promise<DocumentType<FilmEntity> | null> {
+    const favoriteFilms = userId ? await this.watchlistModel
+      .findOne({ userId })
+      .select('filmIds')
+      .exec() : null;
+    const favorites = favoriteFilms?.filmIds || [];
     return this.filmModel
-      .findById(filmId)
-      .populate('userId')
-      .exec();
+      .aggregate([
+        {
+          $match: { _id: Types.ObjectId.createFromHexString(filmId) }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $addFields: {
+            isFavorite: {
+              $in: ['$_id', favorites]
+            }
+          }
+        }
+      ])
+      .exec()
+      .then((res) => res[0]);
   }
 
   public async findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null> {
@@ -89,7 +117,7 @@ export default class FilmService implements FilmServiceInterface {
 
   public async findFavorite(userId: string): Promise<DocumentType<FilmEntity>[] | null> {
     const favoriteFilms = await this.watchlistModel
-      .findOne({userId})
+      .findOne({ userId })
       .select('filmIds')
       .exec();
     if (!favoriteFilms?.filmIds) {
@@ -98,7 +126,7 @@ export default class FilmService implements FilmServiceInterface {
     return this.filmModel
       .aggregate([
         {
-          $match: {_id: {$in: favoriteFilms.filmIds}}
+          $match: { _id: { $in: favoriteFilms.filmIds } }
         },
         {
           $lookup: {

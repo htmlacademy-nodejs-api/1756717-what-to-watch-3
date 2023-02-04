@@ -137,12 +137,13 @@ export default class FilmController extends Controller {
   }
 
   public async show(
-    { params }: Request<core.ParamsDictionary | ParamsGetFilm>,
+    req: Request<core.ParamsDictionary | ParamsGetFilm>,
     res: Response
   ): Promise<void> {
+    const { params, user } = req;
     const { filmId } = params;
 
-    const film = await this.filmService.findById(filmId);
+    const film = await this.filmService.findById(filmId, user?.id);
 
     this.ok(res, fillDTO(FilmResponse, film));
   }
