@@ -178,8 +178,9 @@ export default class FilmController extends Controller {
     this.ok(res, fillDTO(ShortFilmResponse, films));
   }
 
-  public async getPromo(_req: Request, res: Response): Promise<void> {
-    const result = await this.filmService.findPromo();
+  public async getPromo(req: Request, res: Response): Promise<void> {
+    const { user } = req;
+    const result = await this.filmService.findPromo(user?.id);
     this.ok(res, fillDTO(FilmResponse, result));
   }
 

@@ -166,11 +166,38 @@ export default class FilmService implements FilmServiceInterface {
       }).exec();
   }
 
-  public async findPromo(): Promise<DocumentType<FilmEntity> | null> {
+  public async findPromo(userId?: string): Promise<DocumentType<FilmEntity> | null> {
+    const favoriteFilms = userId ? await this.watchlistModel
+      .findOne({ userId })
+      .select('filmIds')
+      .exec() : null;
+    const favorites = favoriteFilms?.filmIds || [];
     return this.filmModel
-      .findOne({ isPromo: true })
-      .populate('userId')
-      .exec();
+      .aggregate([
+        {
+          $match: { isPromo: true }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $addFields: {
+            isFavorite: {
+              $in: ['$_id', favorites]
+            }
+          }
+        }
+      ])
+      .exec()
+      .then((res) => res[0]);
   }
 
   public async findFavorite(userId: string): Promise<DocumentType<FilmEntity>[] | null> {
