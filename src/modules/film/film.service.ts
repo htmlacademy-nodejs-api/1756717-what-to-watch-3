@@ -9,12 +9,14 @@ import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { DEFAULT_FILM_COUNT } from './film.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { GenreType } from '../../types/genre-type.enum.js';
+import { WatchlistEntity } from '../watchlist/watchlist.entity.js';
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
   constructor(
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
-    @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>
+    @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>,
+    @inject(Component.WatchlistModel) private readonly watchlistModel: types.ModelType<WatchlistEntity>
   ) { }
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
@@ -85,11 +87,31 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findFavorite(): Promise<DocumentType<FilmEntity>[]> {
-    return this.filmModel
-      .find()
-      .populate('userId')
+  public async findFavorite(userId: string): Promise<DocumentType<FilmEntity>[] | null> {
+    const favoriteFilms = await this.watchlistModel
+      .findOne({userId})
+      .select('filmIds')
       .exec();
+    if (!favoriteFilms?.filmIds) {
+      return null;
+    }
+    return this.filmModel
+      .aggregate([
+        {
+          $match: {_id: {$in: favoriteFilms.filmIds}}
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        }
+      ]);
   }
 
   public async changeFavoriteStatus(filmId: string, status: number): Promise<DocumentType<FilmEntity> | null> {

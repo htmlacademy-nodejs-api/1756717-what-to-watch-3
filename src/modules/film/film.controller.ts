@@ -181,8 +181,9 @@ export default class FilmController extends Controller {
     this.ok(res, fillDTO(FilmResponse, result));
   }
 
-  public async getFavorite(_req: Request, res: Response) {
-    const result = await this.filmService.findFavorite();
+  public async getFavorite(req: Request, res: Response) {
+    const { user } = req;
+    const result = await this.filmService.findFavorite(user.id);
     this.ok(res, fillDTO(ShortFilmResponse, result));
   }
 

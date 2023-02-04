@@ -78,10 +78,16 @@ GET http://localhost:5000/films/promo HTTP/1.1
 
 ###
 
+## Получить список фильмов "К просмотру"
+
+GET http://localhost:5000/films/favorite HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTU0MjM2MywiZXhwIjoxNjc1NzE1MTYzfQ.oFo6FgznZIkBk_c3e1qmmtbmb_D0v5SXjLFx10BcWRI
+###
+
 ## Изменить статус "К просмотру" у фильма
 
-POST http://localhost:5000/films/favorite/63cc15203c3a933d1b83b9e2/0 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTUzNDUwNywiZXhwIjoxNjc1NzA3MzA3fQ.wQTOpvV-D94K_0ns5hSRt3FVNhS5rslemlsuCfnIvBw
+POST http://localhost:5000/films/favorite/63d7fecee1408baefa9c0428/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTU0MjM2MywiZXhwIjoxNjc1NzE1MTYzfQ.oFo6FgznZIkBk_c3e1qmmtbmb_D0v5SXjLFx10BcWRI
 ###
 
 # Пользователи
