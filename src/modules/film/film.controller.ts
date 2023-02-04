@@ -109,8 +109,9 @@ export default class FilmController extends Controller {
     req: Request<core.ParamsDictionary, unknown, unknown, RequestQuery>,
     res: Response
   ): Promise<void> {
-    const limit = req.query?.limit;
-    const films = await this.filmService.find(limit);
+    const { query, user } = req;
+    const limit = Number(query?.limit) || undefined;
+    const films = await this.filmService.find(limit, user?.id);
     this.ok(res, fillDTO(ShortFilmResponse, films));
   }
 

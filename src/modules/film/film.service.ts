@@ -67,13 +67,40 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async find(count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async find(count?: number, userId?: string): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
-
+    const favoriteFilms = userId ? await this.watchlistModel
+      .findOne({ userId })
+      .select('filmIds')
+      .exec() : null;
+    const favorites = favoriteFilms?.filmIds || [];
     return this.filmModel
-      .find({}, {}, { limit })
-      .sort({ postDate: SortType.Down })
-      .populate('userId')
+      .aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $limit: limit
+        },
+        {
+          $addFields: {
+            isFavorite: {
+              $in: ['$_id', favorites]
+            }
+          }
+        },
+        {
+          $sort: { postDate: SortType.Down }
+        }
+      ])
       .exec();
   }
 

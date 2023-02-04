@@ -9,6 +9,7 @@ GET http://localhost:3123/api HTTP/1.1
 ## Получить список фильмов
 
 GET http://localhost:5000/films HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTU0MjM2MywiZXhwIjoxNjc1NzE1MTYzfQ.oFo6FgznZIkBk_c3e1qmmtbmb_D0v5SXjLFx10BcWRI
 
 ###
 
