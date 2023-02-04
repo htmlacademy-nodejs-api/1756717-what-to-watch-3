@@ -171,10 +171,10 @@ export default class FilmController extends Controller {
   }
 
   public async getByGenre(
-    { params, query }: Request<core.ParamsDictionary | ParamsGetGenre, unknown, unknown, RequestQuery>,
+    { params, query, user }: Request<core.ParamsDictionary | ParamsGetGenre, unknown, unknown, RequestQuery>,
     res: Response
   ): Promise<void> {
-    const films = await this.filmService.findByGenre(params.genre, query.limit);
+    const films = await this.filmService.findByGenre(params.genre, query?.limit, user?.id);
     this.ok(res, fillDTO(ShortFilmResponse, films));
   }
 
