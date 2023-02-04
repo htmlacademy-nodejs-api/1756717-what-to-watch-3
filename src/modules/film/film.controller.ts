@@ -201,7 +201,7 @@ export default class FilmController extends Controller {
   ): Promise<void> {
     const { params, user } = req;
     const film = await this.filmService.changeFavoriteStatus(params.filmId, Number(params.status));
-    if (params.status) {
+    if (params.status && Number(params.status) === 1) {
       await this.watchlistService.create(params.filmId, user.id);
     } else {
       await this.watchlistService.delete(params.filmId, user.id);

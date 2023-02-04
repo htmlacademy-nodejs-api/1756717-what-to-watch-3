@@ -80,8 +80,8 @@ GET http://localhost:5000/films/promo HTTP/1.1
 
 ## Изменить статус "К просмотру" у фильма
 
-POST http://localhost:5000/films/favorite/63cc15203c3a933d1b83b9e2/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTQ1NTU4NiwiZXhwIjoxNjc1NjI4Mzg2fQ.8P0aQ1YVPMLqV2Vd7z8giyBA0rp1oCptWA_WauuSlV8
+POST http://localhost:5000/films/favorite/63cc15203c3a933d1b83b9e2/0 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTUzNDUwNywiZXhwIjoxNjc1NzA3MzA3fQ.wQTOpvV-D94K_0ns5hSRt3FVNhS5rslemlsuCfnIvBw
 ###
 
 # Пользователи
