@@ -1,5 +1,7 @@
 export const JWT_ALGORITM = 'HS256';
 
+export const DEFAULT_AVATAR_FILE_NAME = 'default-avatar.jpg';
+
 export const userRequiredMessages = {
   USERNAME: 'userName is required',
   EMAIL: 'email is required',
