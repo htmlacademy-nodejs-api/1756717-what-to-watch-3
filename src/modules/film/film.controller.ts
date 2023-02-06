@@ -23,16 +23,18 @@ import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.mid
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
 import { WatchlistServiceInterface } from '../watchlist/watchlist-service.interface.js';
+import { ConfigInterface } from '../../common/config/config.interface.js';
 
 @injectable()
 export default class FilmController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
     @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
     @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
     @inject(Component.WatchlistServiceInterface) private readonly watchlistService: WatchlistServiceInterface
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for FilmController…');
 
