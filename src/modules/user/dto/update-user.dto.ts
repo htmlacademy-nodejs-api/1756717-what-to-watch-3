@@ -1,4 +1,9 @@
+import { IsOptional } from 'class-validator';
+
 export default class UpdateUserDto {
-  public userName!: string;
-  public avatarUrl!: string;
+  @IsOptional()
+  public userName?: string;
+
+  @IsOptional()
+  public avatarUrl?: string;
 }

@@ -135,14 +135,14 @@ Content-Type: application/json
 
 ## Отправка аватарки пользователю
 
-POST http://localhost:5000/users/62823cb2c5a64ce9f1b50eb6/avatar HTTP/1.1
+POST http://localhost:5000/users/63dd6c54b2a7ff5536fe7b95/avatar HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="avatar"; filename="avatar.jpg"
 Content-Type: image/jpeg
 
-< Users/avatar.jpg
+< ./markup/avatar.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 ###
