@@ -9,13 +9,15 @@ import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { DEFAULT_FILM_COUNT } from './film.constant.js';
 import { SortType } from '../../types/sort-type.enum.js';
 import { GenreType } from '../../types/genre-type.enum.js';
-import mongoose from 'mongoose';
+import { WatchlistEntity } from '../watchlist/watchlist.entity.js';
+import { Types } from 'mongoose';
 
 @injectable()
 export default class FilmService implements FilmServiceInterface {
   constructor(
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
-    @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>
+    @inject(Component.FilmModel) private readonly filmModel: types.ModelType<FilmEntity>,
+    @inject(Component.WatchlistModel) private readonly watchlistModel: types.ModelType<WatchlistEntity>
   ) { }
 
   public async create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>> {
@@ -25,11 +27,38 @@ export default class FilmService implements FilmServiceInterface {
     return result;
   }
 
-  public async findById(filmId: string): Promise<DocumentType<FilmEntity> | null> {
+  public async findById(filmId: string, userId?: string): Promise<DocumentType<FilmEntity> | null> {
+    const favoriteFilms = userId ? await this.watchlistModel
+      .findOne({ userId })
+      .select('filmIds')
+      .exec() : null;
+    const favorites = favoriteFilms?.filmIds || [];
     return this.filmModel
-      .findById(filmId)
-      .populate('userId')
-      .exec();
+      .aggregate([
+        {
+          $match: { _id: Types.ObjectId.createFromHexString(filmId) }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $addFields: {
+            isFavorite: {
+              $in: ['$_id', favorites]
+            }
+          }
+        }
+      ])
+      .exec()
+      .then((res) => res[0]);
   }
 
   public async findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null> {
@@ -38,13 +67,40 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async find(count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async find(count?: number, userId?: string): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
-
+    const favoriteFilms = userId ? await this.watchlistModel
+      .findOne({ userId })
+      .select('filmIds')
+      .exec() : null;
+    const favorites = favoriteFilms?.filmIds || [];
     return this.filmModel
-      .find({}, {}, { limit })
-      .sort({ postDate: SortType.Down })
-      .populate('userId')
+      .aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $limit: limit
+        },
+        {
+          $addFields: {
+            isFavorite: {
+              $in: ['$_id', favorites]
+            }
+          }
+        },
+        {
+          $sort: { postDate: SortType.Down }
+        }
+      ])
       .exec();
   }
 
@@ -61,12 +117,43 @@ export default class FilmService implements FilmServiceInterface {
       .exec();
   }
 
-  public async findByGenre(genre: GenreType, count?: number): Promise<DocumentType<FilmEntity>[]> {
+  public async findByGenre(genre: GenreType, count?: number, userId?: string): Promise<DocumentType<FilmEntity>[]> {
     const limit = count ?? DEFAULT_FILM_COUNT;
+    const favoriteFilms = userId ? await this.watchlistModel
+      .findOne({ userId })
+      .select('filmIds')
+      .exec() : null;
+    const favorites = favoriteFilms?.filmIds || [];
     return this.filmModel
-      .find({ genre: genre }, {}, { limit })
-      .sort({ postDate: SortType.Down })
-      .populate('userId')
+      .aggregate([
+        {
+          $match: { genre }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $limit: limit
+        },
+        {
+          $addFields: {
+            isFavorite: {
+              $in: ['$_id', favorites]
+            }
+          }
+        },
+        {
+          $sort: { postDate: SortType.Down }
+        }
+      ])
       .exec();
   }
 
@@ -79,18 +166,65 @@ export default class FilmService implements FilmServiceInterface {
       }).exec();
   }
 
-  public async findPromo(): Promise<DocumentType<FilmEntity> | null> {
+  public async findPromo(userId?: string): Promise<DocumentType<FilmEntity> | null> {
+    const favoriteFilms = userId ? await this.watchlistModel
+      .findOne({ userId })
+      .select('filmIds')
+      .exec() : null;
+    const favorites = favoriteFilms?.filmIds || [];
     return this.filmModel
-      .findOne()
-      .populate('userId')
-      .exec();
+      .aggregate([
+        {
+          $match: { isPromo: true }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        },
+        {
+          $addFields: {
+            isFavorite: {
+              $in: ['$_id', favorites]
+            }
+          }
+        }
+      ])
+      .exec()
+      .then((res) => res[0]);
   }
 
-  public async findFavorite(): Promise<DocumentType<FilmEntity>[]> {
-    return this.filmModel
-      .find()
-      .populate('userId')
+  public async findFavorite(userId: string): Promise<DocumentType<FilmEntity>[] | null> {
+    const favoriteFilms = await this.watchlistModel
+      .findOne({ userId })
+      .select('filmIds')
       .exec();
+    if (!favoriteFilms?.filmIds) {
+      return null;
+    }
+    return this.filmModel
+      .aggregate([
+        {
+          $match: { _id: { $in: favoriteFilms.filmIds } }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: '$user'
+        }
+      ]);
   }
 
   public async changeFavoriteStatus(filmId: string, status: number): Promise<DocumentType<FilmEntity> | null> {
@@ -109,25 +243,16 @@ export default class FilmService implements FilmServiceInterface {
       .exists({ _id: documentId })) !== null;
   }
 
-  public async countRating(filmId: string): Promise<DocumentType<FilmEntity> | null> {
-    this.filmModel
-      .aggregate([
-        {
-          $match: {'_id': new mongoose.Types.ObjectId(filmId)},
-        },
-        {
-          $lookup: {
-            from: 'comments',
-            localField: '_id',
-            foreignField: 'filmId',
-            as: 'commentsData'
-          },
-        },
-        {
-          $addFields:
-            { rating: { $avg: '$commentsData.rating' } }
-        },
-      ]);
-    return this.filmModel.findById(filmId);
+  public async countRating(filmId: string, rating: number): Promise<DocumentType<FilmEntity> | null> {
+    const movie = await this.findById(filmId);
+    const oldRating = movie?.rating ?? 0;
+    const ratingsCount = movie?.commentsAmount ?? 0;
+    const newRating = Number(((rating + oldRating * ratingsCount) / (ratingsCount + 1)).toFixed(1));
+
+    return await this.updateById(
+      filmId,
+      {
+        rating: newRating
+      });
   }
 }

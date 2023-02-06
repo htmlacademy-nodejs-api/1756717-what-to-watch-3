@@ -1,21 +1,20 @@
 import { IsString, IsMongoId, Length, Max, Min, IsDateString } from 'class-validator';
-import { FILMID_VALIDATION_MESSAGE, MAX_RATING_VALIDATION_MESSAGE, MESSAGE_REQUIRED_MESSAGE, MESSAGE_VALIDATION_MESSAGE, MIN_RATING_VALIDATION_MESSAGE, POSTDATE_COMMENT_VALIDATION_MESSAGE, USERID_VALIDATION_MESSAGE } from '../comment.constant.js';
+import { commentRequiredMessages, commentValidationMessages, messageLength, rating } from '../comment.constant.js';
 
 export default class CreateCommentDto {
-  @IsString({message: MESSAGE_REQUIRED_MESSAGE})
-  @Length(5, 1024, {message: MESSAGE_VALIDATION_MESSAGE})
+  @IsString({message: commentRequiredMessages.MESSAGE})
+  @Length(messageLength.MIN, messageLength.MAX, {message: commentValidationMessages.MESSAGE})
   public message!: string;
 
-  @Min(1, {message: MIN_RATING_VALIDATION_MESSAGE})
-  @Max(10, {message: MAX_RATING_VALIDATION_MESSAGE})
+  @Min(rating.MIN, {message: commentValidationMessages.MIN_RATING})
+  @Max(rating.MAX, {message: commentValidationMessages.MAX_RATING})
   public rating!: number;
 
-  @IsDateString({}, {message: POSTDATE_COMMENT_VALIDATION_MESSAGE})
+  @IsDateString({}, {message: commentValidationMessages.POSTDATE})
   public postDate!: Date;
 
-  @IsMongoId({message: USERID_VALIDATION_MESSAGE})
   public userId!: string;
 
-  @IsMongoId({message: FILMID_VALIDATION_MESSAGE})
+  @IsMongoId({message: commentValidationMessages.FILMID})
   public filmId!: string;
 }

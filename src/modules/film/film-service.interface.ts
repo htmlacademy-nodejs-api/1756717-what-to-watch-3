@@ -6,16 +6,16 @@ import { DocumentExistsInterface } from '../../types/document-exists.interface.j
 
 export interface FilmServiceInterface extends DocumentExistsInterface{
   create(dto: CreateFilmDto): Promise<DocumentType<FilmEntity>>;
-  findById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  findById(filmId: string, userId?: string): Promise<DocumentType<FilmEntity> | null>;
   findByFilmName(filmName: string): Promise<DocumentType<FilmEntity> | null>;
-  find(count?: number): Promise<DocumentType<FilmEntity>[]>;
+  find(count?: number, userId?: string): Promise<DocumentType<FilmEntity>[]>;
   deleteById(filmId: string): Promise<DocumentType<FilmEntity> | null>;
   updateById(filmId: string, dto: UpdateFilmDto): Promise<DocumentType<FilmEntity> | null>;
-  findByGenre(genre: string, count?: number): Promise<DocumentType<FilmEntity>[]>;
+  findByGenre(genre: string, count?: number, userId?: string): Promise<DocumentType<FilmEntity>[]>;
   incCommentCount(filmId: string): Promise<DocumentType<FilmEntity> | null>;
-  findPromo(): Promise<DocumentType<FilmEntity> | null>;
-  findFavorite(): Promise<DocumentType<FilmEntity>[]>
+  findPromo(userId?: string): Promise<DocumentType<FilmEntity> | null>;
+  findFavorite(userId: string): Promise<DocumentType<FilmEntity>[] | null>
   changeFavoriteStatus(filmId: string, status: number): Promise<DocumentType<FilmEntity> | null>;
   exists(documentId: string): Promise<boolean>;
-  countRating(filmId: string): Promise<DocumentType<FilmEntity> | null>;
+  countRating(filmId: string, rating: number): Promise<DocumentType<FilmEntity> | null>;
 }
