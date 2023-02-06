@@ -23,7 +23,6 @@ export const filmRequiredMessages = {
   DIRECTOR: 'director is required',
   RUNTIME: 'runTime is required',
   USER: 'userId is required',
-  POSTER: 'posterImage is required',
   BACKGROUND_IMAGE: 'backgroundImage is required',
   BACKGROUND_COLOR: 'backgroundColor is required',
 };

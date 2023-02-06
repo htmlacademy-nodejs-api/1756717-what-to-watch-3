@@ -24,6 +24,8 @@ import { DocumentExistsMiddleware } from '../../common/middlewares/document-exis
 import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
 import { WatchlistServiceInterface } from '../watchlist/watchlist-service.interface.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
+import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
+import UploadImageResponse from './response/upload-image.response.js';
 
 @injectable()
 export default class FilmController extends Controller {
@@ -103,6 +105,16 @@ export default class FilmController extends Controller {
       middlewares: [
         new ValidateObjectIdMiddleware('filmId'),
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
+      ]
+    });
+    this.addRoute({
+      path: '/:filmId/image',
+      method: HttpMethod.Post,
+      handler: this.uploadImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('filmId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image'),
       ]
     });
   }
@@ -213,5 +225,12 @@ export default class FilmController extends Controller {
       await this.watchlistService.delete(params.filmId, user.id);
     }
     this.ok(res, fillDTO(FilmResponse, film));
+  }
+
+  public async uploadImage(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
+    const {filmId} = req.params;
+    const updateDto = { posterImage: req.file?.filename };
+    await this.filmService.updateById(filmId, updateDto);
+    this.created(res, fillDTO(UploadImageResponse, {updateDto}));
   }
 }
