@@ -164,9 +164,18 @@ export default class FilmController extends Controller {
   }
 
   public async update(
-    { body, params }: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
+    { body, params, user }: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
     res: Response
   ): Promise<void> {
+
+    const film = await this.filmService.findById(params.filmId);
+    if (film?.userId?._id.toString() !== user.id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        `User don't have root to change film (id: ${params.filmId})`,
+        'FilmController'
+      );
+    }
     const updatedFilm = await this.filmService.updateById(params.filmId, body);
 
     this.ok(res, fillDTO(FilmResponse, updatedFilm));
