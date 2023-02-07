@@ -29,7 +29,6 @@ export default class WatchlistService implements WatchlistServiceInterface {
   }
 
   public async add(filmId: string, userId: string): Promise<DocumentType<WatchlistEntity> | null> {
-    console.log('add');
     return await this.watchlistModel
       .findOneAndUpdate(
         {
@@ -42,7 +41,6 @@ export default class WatchlistService implements WatchlistServiceInterface {
   }
 
   public async delete(filmId: string, userId: string): Promise<DocumentType<WatchlistEntity> | null> {
-    console.log('delete');
     return this.watchlistModel
       .findOneAndUpdate(
         {
@@ -51,5 +49,10 @@ export default class WatchlistService implements WatchlistServiceInterface {
         {
           $pull: { filmIds: filmId }
         });
+  }
+
+  public async findById(filmId: string): Promise<DocumentType<WatchlistEntity> | null> {
+    return this.watchlistModel
+      .findOne({filmIds: filmId});
   }
 }

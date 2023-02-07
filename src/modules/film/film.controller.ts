@@ -237,6 +237,14 @@ export default class FilmController extends Controller {
     const { params, user } = req;
     const film = await this.filmService.changeFavoriteStatus(params.filmId, Number(params.status));
     if (params.status && Number(params.status) === 1) {
+      const favorite = await this.watchlistService.findById(params.filmId);
+      if (favorite) {
+        throw new HttpError(
+          StatusCodes.BAD_REQUEST,
+          `Film ${params.filmId}) is already favorite`,
+          'FilmController'
+        );
+      }
       await this.watchlistService.create(params.filmId, user.id);
     } else {
       await this.watchlistService.delete(params.filmId, user.id);
