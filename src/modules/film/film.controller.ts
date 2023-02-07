@@ -182,15 +182,23 @@ export default class FilmController extends Controller {
   }
 
   public async delete(
-    { params }: Request<core.ParamsDictionary | ParamsGetFilm>,
+    { params, user }: Request<core.ParamsDictionary | ParamsGetFilm>,
     res: Response
   ): Promise<void> {
-    const { filmId } = params;
-    const film = await this.filmService.deleteById(filmId);
 
-    await this.commentService.deleteByFilmId(filmId);
+    const film = await this.filmService.findById(params.filmId);
+    if (film?.userId?._id.toString() !== user.id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        `User don't have root to change film (id: ${params.filmId})`,
+        'FilmController'
+      );
+    }
+    const deletedFilm = await this.filmService.deleteById(params.filmId);
 
-    this.noContent(res, film);
+    await this.commentService.deleteByFilmId(params.filmId);
+
+    this.noContent(res, deletedFilm);
   }
 
   public async getByGenre(
