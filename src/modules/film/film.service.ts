@@ -53,7 +53,8 @@ export default class FilmService implements FilmServiceInterface {
           $addFields: {
             isFavorite: {
               $in: ['$_id', favorites]
-            }
+            },
+            userId: '$user'
           }
         }
       ])
@@ -94,7 +95,8 @@ export default class FilmService implements FilmServiceInterface {
           $addFields: {
             isFavorite: {
               $in: ['$_id', favorites]
-            }
+            },
+            userId: '$user'
           }
         },
         {
@@ -147,7 +149,8 @@ export default class FilmService implements FilmServiceInterface {
           $addFields: {
             isFavorite: {
               $in: ['$_id', favorites]
-            }
+            },
+            userId: '$user'
           }
         },
         {
@@ -192,7 +195,8 @@ export default class FilmService implements FilmServiceInterface {
           $addFields: {
             isFavorite: {
               $in: ['$_id', favorites]
-            }
+            },
+            userId: '$user'
           }
         }
       ])
@@ -223,6 +227,11 @@ export default class FilmService implements FilmServiceInterface {
         },
         {
           $unwind: '$user'
+        },
+        {
+          $addFields: {
+            userId: '$user'
+          }
         }
       ]);
   }
