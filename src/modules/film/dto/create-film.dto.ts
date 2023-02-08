@@ -42,10 +42,6 @@ export default class CreateFilmDto {
 
   public userId!: string;
 
-  @IsString({message: filmRequiredMessages.POSTER})
-  @Contains('.jpg', {message: filmValidationMessages.POSTER})
-  public posterImage!: string;
-
   @IsString({message: filmRequiredMessages.BACKGROUND_IMAGE})
   @Contains('.jpg', {message: filmValidationMessages.BACKGROUND_IMAGE})
   public backgroundImage!: string;

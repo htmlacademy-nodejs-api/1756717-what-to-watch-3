@@ -23,16 +23,20 @@ import { ValidateDtoMiddleware } from '../../common/middlewares/validate-dto.mid
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
 import { WatchlistServiceInterface } from '../watchlist/watchlist-service.interface.js';
+import { ConfigInterface } from '../../common/config/config.interface.js';
+import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
+import UploadImageResponse from './response/upload-image.response.js';
 
 @injectable()
 export default class FilmController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
     @inject(Component.FilmServiceInterface) private readonly filmService: FilmServiceInterface,
     @inject(Component.CommentServiceInterface) private readonly commentService: CommentServiceInterface,
     @inject(Component.WatchlistServiceInterface) private readonly watchlistService: WatchlistServiceInterface
   ) {
-    super(logger);
+    super(logger, configService);
 
     this.logger.info('Register routes for FilmController…');
 
@@ -103,6 +107,16 @@ export default class FilmController extends Controller {
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
       ]
     });
+    this.addRoute({
+      path: '/:filmId/image',
+      method: HttpMethod.Post,
+      handler: this.uploadImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('filmId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image'),
+      ]
+    });
   }
 
   public async index(
@@ -150,24 +164,41 @@ export default class FilmController extends Controller {
   }
 
   public async update(
-    { body, params }: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
+    { body, params, user }: Request<core.ParamsDictionary | ParamsGetFilm, Record<string, unknown>, UpdateFilmDto>,
     res: Response
   ): Promise<void> {
+
+    const film = await this.filmService.findById(params.filmId);
+    if (film?.userId?._id.toString() !== user.id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        `User don't have root to change film (id: ${params.filmId})`,
+        'FilmController'
+      );
+    }
     const updatedFilm = await this.filmService.updateById(params.filmId, body);
 
     this.ok(res, fillDTO(FilmResponse, updatedFilm));
   }
 
   public async delete(
-    { params }: Request<core.ParamsDictionary | ParamsGetFilm>,
+    { params, user }: Request<core.ParamsDictionary | ParamsGetFilm>,
     res: Response
   ): Promise<void> {
-    const { filmId } = params;
-    const film = await this.filmService.deleteById(filmId);
 
-    await this.commentService.deleteByFilmId(filmId);
+    const film = await this.filmService.findById(params.filmId);
+    if (film?.userId?._id.toString() !== user.id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        `User don't have root to change film (id: ${params.filmId})`,
+        'FilmController'
+      );
+    }
+    const deletedFilm = await this.filmService.deleteById(params.filmId);
 
-    this.noContent(res, film);
+    await this.commentService.deleteByFilmId(params.filmId);
+
+    this.noContent(res, deletedFilm);
   }
 
   public async getByGenre(
@@ -206,10 +237,25 @@ export default class FilmController extends Controller {
     const { params, user } = req;
     const film = await this.filmService.changeFavoriteStatus(params.filmId, Number(params.status));
     if (params.status && Number(params.status) === 1) {
+      const favorite = await this.watchlistService.findById(params.filmId);
+      if (favorite) {
+        throw new HttpError(
+          StatusCodes.BAD_REQUEST,
+          `Film ${params.filmId}) is already favorite`,
+          'FilmController'
+        );
+      }
       await this.watchlistService.create(params.filmId, user.id);
     } else {
       await this.watchlistService.delete(params.filmId, user.id);
     }
     this.ok(res, fillDTO(FilmResponse, film));
+  }
+
+  public async uploadImage(req: Request<core.ParamsDictionary | ParamsGetFilm>, res: Response) {
+    const {filmId} = req.params;
+    const updateDto = { posterImage: req.file?.filename };
+    await this.filmService.updateById(filmId, updateDto);
+    this.created(res, fillDTO(UploadImageResponse, {updateDto}));
   }
 }
