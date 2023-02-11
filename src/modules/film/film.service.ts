@@ -54,7 +54,8 @@ export default class FilmService implements FilmServiceInterface {
             isFavorite: {
               $in: ['$_id', favorites]
             },
-            userId: '$user'
+            userId: '$user',
+            id: { $toString: '$_id' }
           }
         }
       ])
@@ -96,7 +97,8 @@ export default class FilmService implements FilmServiceInterface {
             isFavorite: {
               $in: ['$_id', favorites]
             },
-            userId: '$user'
+            userId: '$user',
+            id: { $toString: '$_id' }
           }
         },
         {
@@ -150,7 +152,8 @@ export default class FilmService implements FilmServiceInterface {
             isFavorite: {
               $in: ['$_id', favorites]
             },
-            userId: '$user'
+            userId: '$user',
+            id: { $toString: '$_id' }
           }
         },
         {
@@ -196,7 +199,8 @@ export default class FilmService implements FilmServiceInterface {
             isFavorite: {
               $in: ['$_id', favorites]
             },
-            userId: '$user'
+            userId: '$user',
+            id: { $toString: '$_id' }
           }
         }
       ])
@@ -230,7 +234,8 @@ export default class FilmService implements FilmServiceInterface {
         },
         {
           $addFields: {
-            userId: '$user'
+            userId: '$user',
+            id: { $toString: '$_id' }
           }
         }
       ]);
@@ -253,10 +258,11 @@ export default class FilmService implements FilmServiceInterface {
   }
 
   public async countRating(filmId: string, rating: number): Promise<DocumentType<FilmEntity> | null> {
+
     const movie = await this.findById(filmId);
     const oldRating = movie?.rating ?? 0;
     const ratingsCount = movie?.commentsAmount ?? 0;
-    const newRating = Number(((rating + oldRating * ratingsCount) / (ratingsCount + 1)).toFixed(1));
+    const newRating = Number(((rating + oldRating * (ratingsCount - 1)) / ratingsCount).toFixed(1));
 
     return await this.updateById(
       filmId,

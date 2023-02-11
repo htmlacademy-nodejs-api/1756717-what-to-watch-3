@@ -14,7 +14,6 @@ import CreateFilmDto from './dto/create-film.dto.js';
 import HttpError from '../../common/errors/http-error.js';
 import { RequestQuery } from '../../types/request-query.type.js';
 import { ParamsGetFilm } from '../../types/params-get-film.type.js';
-import { ParamsGetGenre } from '../../types/params-get-genre.type.js';
 import UpdateFilmDto from './dto/update-film.dto.js';
 import { CommentServiceInterface } from '../comment/comment-service.interface.js';
 import CommentResponse from '../comment/response/comment.response.js';
@@ -97,7 +96,6 @@ export default class FilmController extends Controller {
         new DocumentExistsMiddleware(this.filmService, 'Film', 'filmId'),
       ]
     });
-    this.addRoute({ path: '/genres/:genre', method: HttpMethod.Get, handler: this.getByGenre });
     this.addRoute({
       path: '/:filmId/comments',
       method: HttpMethod.Get,
@@ -125,7 +123,12 @@ export default class FilmController extends Controller {
   ): Promise<void> {
     const { query, user } = req;
     const limit = Number(query?.limit) || undefined;
-    const films = await this.filmService.find(limit, user?.id);
+    let films;
+    if (query.genre) {
+      films = await this.filmService.findByGenre(query.genre, limit, user?.id);
+    } else {
+      films = await this.filmService.find(limit, user?.id);
+    }
     this.ok(res, fillDTO(ShortFilmResponse, films));
   }
 
@@ -194,19 +197,12 @@ export default class FilmController extends Controller {
         'FilmController'
       );
     }
-    const deletedFilm = await this.filmService.deleteById(params.filmId);
 
     await this.commentService.deleteByFilmId(params.filmId);
 
-    this.noContent(res, deletedFilm);
-  }
+    const deletedFilm = await this.filmService.deleteById(params.filmId);
 
-  public async getByGenre(
-    { params, query, user }: Request<core.ParamsDictionary | ParamsGetGenre, unknown, unknown, RequestQuery>,
-    res: Response
-  ): Promise<void> {
-    const films = await this.filmService.findByGenre(params.genre, query?.limit, user?.id);
-    this.ok(res, fillDTO(ShortFilmResponse, films));
+    this.noContent(res, deletedFilm);
   }
 
   public async getPromo(req: Request, res: Response): Promise<void> {
@@ -237,7 +233,7 @@ export default class FilmController extends Controller {
     const { params, user } = req;
     const film = await this.filmService.changeFavoriteStatus(params.filmId, Number(params.status));
     if (params.status && Number(params.status) === 1) {
-      const favorite = await this.watchlistService.findById(params.filmId);
+      const favorite = await this.watchlistService.findById(params.filmId, user.id);
       if (favorite) {
         throw new HttpError(
           StatusCodes.BAD_REQUEST,
