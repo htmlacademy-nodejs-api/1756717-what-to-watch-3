@@ -1,7 +1,6 @@
 import CommentDto from '../../dto/comment/comment.dto.js';
 import FilmShortDto from '../../dto/film/film-short.dto.js';
 import FilmDto from '../../dto/film/film.dto.js';
-import UpdateFilmDto from '../../dto/film/update-film.dto.js';
 import UserWithTokenDto from '../../dto/user/user-with-token.dto.js';
 import UserDto from '../../dto/user/user.dto.js';
 import { Film } from '../../types/film.js';
@@ -45,25 +44,6 @@ export const adaptFilmsToClient = (films: FilmShortDto[]): Film[] =>
     }));
 
 export const adaptFilmToClient = (film: FilmDto): Film => ({
-  id: film.id,
-  name: film.name,
-  posterImage: film.posterImage,
-  backgroundImage: film.backgroundImage,
-  backgroundColor: film.backgroundColor,
-  videoLink: film.videoLink,
-  previewVideoLink: film.previewVideoLink,
-  description: film.description,
-  rating: film.rating,
-  director: film.director,
-  starring: film.starring,
-  runTime: film.runTime,
-  genre: film.genre,
-  released: film.released,
-  isFavorite: film.isFavorite,
-  user: adaptUserToClient(film.user),
-});
-
-export const adaptEditedFilmToClient = (film: UpdateFilmDto): Film => ({
   id: film.id,
   name: film.name,
   posterImage: film.posterImage,

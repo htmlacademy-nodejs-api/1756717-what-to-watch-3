@@ -14,6 +14,7 @@ import { FilmModel } from '../modules/film/film.entity.js';
 import { Film } from '../types/film.type.js';
 import { LoggerInterface } from '../common/logger/logger.interface.js';
 import { DatabaseInterface } from '../common/database-client/database.interface.js';
+import { WatchlistModel } from '../modules/watchlist/watchlist.entity.js';
 
 const DEFAULT_DB_PORT = 27017;
 const DEFAULT_USER_PASSWORD = '123456';
@@ -31,7 +32,7 @@ export default class ImportCommand implements CliCommandInterface {
     this.onComplete = this.onComplete.bind(this);
 
     this.logger = new ConsoleLoggerService();
-    this.filmService = new FilmService(this.logger, FilmModel);
+    this.filmService = new FilmService(this.logger, FilmModel, WatchlistModel);
     this.userService = new UserService(this.logger, UserModel);
     this.databaseService = new DatabaseService(this.logger);
   }
