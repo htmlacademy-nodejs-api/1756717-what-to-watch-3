@@ -191,7 +191,7 @@ export const setFavorite = createAsyncThunk<Film, Film['id'], { extra: Extra }>(
   `${NameSpace.FavoriteFilms}/setFavorite`,
   async (id, { extra }) => {
     const { api } = extra;
-    const { data } = await api.post<FilmDto>(`${APIRoute.Favorite}/${id}`);
+    const { data } = await api.post<FilmDto>(`${APIRoute.Favorite}/${id}/1`);
 
     return adaptFilmToClient(data);
   }
@@ -203,7 +203,7 @@ export const unsetFavorite = createAsyncThunk<
   { extra: Extra }
 >(`${NameSpace.FavoriteFilms}/unsetFavorite`, async (id, { extra }) => {
   const { api } = extra;
-  const { data } = await api.delete<FilmDto>(`${APIRoute.Favorite}/${id}`);
+  const { data } = await api.post<FilmDto>(`${APIRoute.Favorite}/${id}/0`);
 
   return adaptFilmToClient(data);
 });
@@ -214,7 +214,7 @@ export const registerUser = createAsyncThunk<void, NewUser, { extra: Extra }>(
     const { api } = extra;
     const postData = await api.post<CreateUserWithIdDto>(APIRoute.Register, adaptSignupToServer(userData));
     if (postData.status === HTTP_CODE.CREATED && userData.avatar) {
-      const postAvatarApiRoute = `${APIRoute.Register}/${postData.data.id}/avatar`;
+      const postAvatarApiRoute = `${APIRoute.User}/${postData.data.id}/avatar`;
 
       await api.post(postAvatarApiRoute, adaptAvatarToServer(userData.avatar), {
         headers: { 'Content-Type': 'multipart/form-data' },

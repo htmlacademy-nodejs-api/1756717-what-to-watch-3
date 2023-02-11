@@ -9,7 +9,7 @@ GET http://localhost:3123/api HTTP/1.1
 ## Получить список фильмов
 
 GET http://localhost:5000/films HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTc3NDkzNiwiZXhwIjoxNjc1OTQ3NzM2fQ.-9qkiTivZMmvhZlBgy70SuOsDzKakwbDvsSjd3QT_Mc
+
 
 ###
 
@@ -66,7 +66,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 
 ## Загрузить изображение для фильма
 POST http://localhost:5000/films/63cc15203c3a933d1b83b9e7/image HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTcyMjM4NiwiZXhwIjoxNjc1ODk1MTg2fQ.EGIGx4hJrv7G7n3kMqwOwAjhSE6QpgTq3I9EVvN3wOQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NjAyNTQ1MiwiZXhwIjoxNjc2MTk4MjUyfQ.B6R_ynEZzaHQ9iEJK0wRrEWFFnjCGJEjPlJOvfznlT4
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 
@@ -81,15 +81,15 @@ Content-Type: image/jpeg
 
 ## Удалить фильм
 
-DELETE http://localhost:5000/films/63e24f43262d86c7f186d0c4 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTc4ODQzOCwiZXhwIjoxNjc1OTYxMjM4fQ.l3k_JafspWKAQYMy3SadZDemJtpHeEFcsgeq-5XQUOo
+DELETE http://localhost:5000/films/63e7987c18930d4b9d2ce8a6 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImVsaXNAYmcuY29tIiwiaWQiOiI2M2U3ODc0ZTUyMmI3NTcyNDRiMmFiMjUiLCJpYXQiOjE2NzYxMjIzNzksImV4cCI6MTY3NjI5NTE3OX0.agqJ8yJTaGB9FokyHTuJX9nMMJoU6G1_OAWsDxlYIgQ
 
 ###
 
 ## Получить фильмы определенного жанра
 
-GET http://localhost:5000/films/genres/Drama HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTc3MjEyNCwiZXhwIjoxNjc1OTQ0OTI0fQ.HlD1uv9qPWAUCcLRDRVVcZbbzr__vUk6zUJRwsJ5q8I
+GET http://localhost:5000/films/?genre=Crime HTTP/1.1
+
 ###
 
 ## Получить промо-фильм
@@ -102,14 +102,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 ## Получить список фильмов "К просмотру"
 
 GET http://localhost:5000/films/favorite HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFubkBvdmVybG9vay5uZXQiLCJpZCI6IjYzZGQ2YzU0YjJhN2ZmNTUzNmZlN2I5NSIsImlhdCI6MTY3NTc3NDkzNiwiZXhwIjoxNjc1OTQ3NzM2fQ.-9qkiTivZMmvhZlBgy70SuOsDzKakwbDvsSjd3QT_Mc
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImVsaXNAYmcuY29tIiwiaWQiOiI2M2U3ODc0ZTUyMmI3NTcyNDRiMmFiMjUiLCJpYXQiOjE2NzYxMjIzNzksImV4cCI6MTY3NjI5NTE3OX0.agqJ8yJTaGB9FokyHTuJX9nMMJoU6G1_OAWsDxlYIgQ
 
 ###
 
 ## Изменить статус "К просмотру" у фильма
 
-POST http://localhost:5000/films/favorite/63cc15203c3a933d1b83b9e2/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTc3MjEyNCwiZXhwIjoxNjc1OTQ0OTI0fQ.HlD1uv9qPWAUCcLRDRVVcZbbzr__vUk6zUJRwsJ5q8I
+POST http://localhost:5000/films/favorite/63d7fecee1408baefa9c0428/1 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImVsaXNAYmcuY29tIiwiaWQiOiI2M2U3ODc0ZTUyMmI3NTcyNDRiMmFiMjUiLCJpYXQiOjE2NzYxMjIzNzksImV4cCI6MTY3NjI5NTE3OX0.agqJ8yJTaGB9FokyHTuJX9nMMJoU6G1_OAWsDxlYIgQ
+
 ###
 
 # Пользователи
@@ -133,8 +134,8 @@ POST http://localhost:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ann@overlook.net",
-  "password": "shining"
+  "email": "elis@bg.com",
+  "password": "123456"
 }
 
 ###

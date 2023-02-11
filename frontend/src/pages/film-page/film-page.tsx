@@ -59,6 +59,7 @@ function FilmPage() {
     }
 
     dispatch(deleteFilm(id));
+    navigate(`${AppRoute.Main}`);
   };
 
   if (isFilmLoading || isSimilarFilmsLoading) {

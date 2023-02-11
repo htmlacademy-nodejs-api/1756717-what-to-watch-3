@@ -45,7 +45,7 @@ export enum APIRoute {
   Logout = '/users/logout',
   Register = '/users/register',
   Genre = '/films',
-  Avatar = '/users/avatar',
+  User = '/users',
 }
 
 export enum NameSpace {

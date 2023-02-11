@@ -51,8 +51,8 @@ export default class WatchlistService implements WatchlistServiceInterface {
         });
   }
 
-  public async findById(filmId: string): Promise<DocumentType<WatchlistEntity> | null> {
+  public async findById(filmId: string, userId: string): Promise<DocumentType<WatchlistEntity> | null> {
     return this.watchlistModel
-      .findOne({filmIds: filmId});
+      .findOne({filmIds: filmId, userId: userId});
   }
 }

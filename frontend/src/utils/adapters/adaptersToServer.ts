@@ -43,7 +43,7 @@ export const adaptEditFilmToServer = (film: Film): UpdateFilmDto => ({
   id: film.id,
   name: film.name,
   description: film.description,
-  posterImage: '',
+  posterImage: film.posterImage,
   genre: checkGenre(film.genre),
   rating: film.rating,
   released: film.released,
@@ -74,7 +74,7 @@ export const adaptAvatarToServer = (file: File) => {
 
 export const adaptImageToServer = (file: string) => {
   const formData = new FormData();
-  formData.set('avatar', file);
+  formData.set('image', file);
 
   return formData;
 };
