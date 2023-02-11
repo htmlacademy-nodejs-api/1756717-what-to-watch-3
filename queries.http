@@ -52,14 +52,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 
 ## Редактировать фильм
 
-PATCH http://localhost:5000/films/63e24f43262d86c7f186d0c4 HTTP/1.1
+PATCH http://localhost:5000/films/63e7edcd3118a7ee9c71569a HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTc4ODE4NCwiZXhwIjoxNjc1OTYwOTg0fQ.WhlxyUaapaJ4IDTDKy_YHzWXN-dkxM3m69Ob2kHWw7k
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImZyZWVkb21AcGlzZW0ubG9jYWwiLCJpZCI6IjYzZTdlZGNkMzExOGE3ZWU5YzcxNTY5OCIsImlhdCI6MTY3NjE0NTM3NywiZXhwIjoxNjc2MzE4MTc3fQ.9JUg-eWfe8vKgU3U1jLgP9-b80GHRwuk2GeCgvLDACY
 
 
 
 {
-  "runTime": 150
+  "isPromo": true
 }
 
 ###
@@ -134,7 +134,7 @@ POST http://localhost:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "elis@bg.com",
+  "email": "freedom@pisem.local",
   "password": "123456"
 }
 
