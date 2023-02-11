@@ -1,33 +1,36 @@
 import { GenreType } from '../../const.js';
+import UserDto from '../user/user.dto.js';
 
 export default class UpdateFilmDto {
-  public name?: string;
+  public id!: string;
 
-  public description?: string;
+  public name!: string;
 
-  public postDate?: Date;
+  public description!: string;
 
-  public genre?: GenreType;
+  public genre!: GenreType;
 
-  public released?: number;
+  public released!: number;
 
-  public rating?: number;
+  public rating!: number;
 
-  public previewVideoLink?: string;
+  public previewVideoLink!: string;
 
-  public videoLink?: string;
+  public videoLink!: string;
 
-  public starring?: string[];
+  public starring!: string[];
 
-  public director?: string;
+  public director!: string;
 
-  public runTime?: number;
+  public runTime!: number;
 
-  public userId?: string;
+  public user!: UserDto;
 
-  public posterImage?: string;
+  public posterImage!: string;
 
-  public backgroundImage?: string;
+  public backgroundImage!: string;
 
-  public backgroundColor?: string;
+  public backgroundColor!: string;
+
+  public isFavorite!: boolean;
 }

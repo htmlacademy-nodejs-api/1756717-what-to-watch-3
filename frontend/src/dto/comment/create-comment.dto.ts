@@ -3,7 +3,7 @@ export default class CreateCommentDto {
 
   public rating!: number;
 
-  public postDate!: Date;
+  public postDate!: string;
 
   public filmId!: string;
 }

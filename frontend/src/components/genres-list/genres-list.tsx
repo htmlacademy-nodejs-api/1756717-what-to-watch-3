@@ -38,7 +38,10 @@ function GenresList() {
             'catalog__genres-item--active': genre === activeGenre,
           })}
         >
-          <Link to={`?genre=${genre}`} className="catalog__genres-link">
+          <Link
+            to={`?genre=${capitalize(genre)}`}
+            className="catalog__genres-link"
+          >
             {capitalize(genre)}
           </Link>
         </li>

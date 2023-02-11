@@ -24,6 +24,7 @@ import {
   getIsLoading as getFilmsByGenreIsLoading,
 } from '../../store/genre-data/selectors';
 import { getIsAuth, getIsAuthor } from '../../store/user-data/selectors';
+import { capitalize } from '../../util';
 
 function FilmPage() {
   const dispatch = useAppDispatch();
@@ -99,7 +100,7 @@ function FilmPage() {
             <div className="film-card__desc">
               <h2 className="film-card__title">{name}</h2>
               <p className="film-card__meta">
-                <span className="film-card__genre">{genre}</span>
+                <span className="film-card__genre">{capitalize(genre)}</span>
                 <span className="film-card__year">{released}</span>
               </p>
 

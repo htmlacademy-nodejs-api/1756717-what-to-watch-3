@@ -17,4 +17,7 @@ export type Film = {
   released: number;
   isFavorite: boolean;
   user: User;
+  imageStatus?: boolean;
 };
+
+export type CreateFilm = Omit<Film, 'postDate' | 'id' | 'commentsAmount' | 'rating' | 'isFavorite' | 'user'>;

@@ -3,7 +3,7 @@ export default class CreateUserDto {
 
   public email!: string;
 
-  public avatarUrl!: string;
+  public avatarUrl!: File | undefined;
 
   public password!: string;
 }

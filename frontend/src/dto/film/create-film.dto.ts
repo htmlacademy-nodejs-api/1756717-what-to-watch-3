@@ -5,13 +5,13 @@ export default class CreateFilmDto {
 
   public description!: string;
 
-  public postDate!: Date;
+  public postDate!: string;
+
+  public posterImage!: string;
 
   public genre!: GenreType;
 
   public released!: number;
-
-  public rating!: number;
 
   public previewVideoLink!: string;
 
