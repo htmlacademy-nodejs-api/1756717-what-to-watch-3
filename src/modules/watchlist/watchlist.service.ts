@@ -17,15 +17,14 @@ export default class WatchlistService implements WatchlistServiceInterface {
     if (result) {
       await this.add(filmId, userId);
       return result;
-    } else {
-      const userWatchlist = await this.watchlistModel
-        .create({
-          filmIds: [filmId],
-          userId: userId
-        });
-      this.logger.info(`Created watchlist for userId: ${userId}`);
-      return userWatchlist;
     }
+    const userWatchlist = await this.watchlistModel
+      .create({
+        filmIds: [filmId],
+        userId: userId
+      });
+    this.logger.info(`Created watchlist for userId: ${userId}`);
+    return userWatchlist;
   }
 
   public async add(filmId: string, userId: string): Promise<DocumentType<WatchlistEntity> | null> {
@@ -53,6 +52,6 @@ export default class WatchlistService implements WatchlistServiceInterface {
 
   public async findById(filmId: string, userId: string): Promise<DocumentType<WatchlistEntity> | null> {
     return this.watchlistModel
-      .findOne({filmIds: filmId, userId: userId});
+      .findOne({ filmIds: filmId, userId: userId });
   }
 }

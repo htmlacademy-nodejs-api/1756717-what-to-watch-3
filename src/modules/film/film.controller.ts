@@ -211,7 +211,7 @@ export default class FilmController extends Controller {
 
     if (!result) {
       throw new HttpError(
-        StatusCodes.BAD_REQUEST,
+        StatusCodes.NOT_FOUND,
         'Promo film is not found',
         'FilmController'
       );

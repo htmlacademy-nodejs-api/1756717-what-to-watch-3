@@ -197,6 +197,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/film"
+        "404":
+          description: Промо-фильм не существует
 
   /films/favorite:
     get:
