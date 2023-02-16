@@ -16,6 +16,8 @@ import {
 } from '../../store/promo-data/selectors';
 import { getActiveGenre } from '../../store/genre-data/selectors';
 import { fetchFilmsByGenre, fetchPromo } from '../../store/api-actions';
+import Logo from '../../components/logo/logo';
+import UserBlock from '../../components/user-block/user-block';
 
 const FILMS_PER_STEP = 8;
 
@@ -52,7 +54,11 @@ function MainPage() {
 
   return (
     <>
-      {promoFilm && <PromoCard promoFilm={promoFilm} />}
+      {promoFilm ? <PromoCard promoFilm={promoFilm} /> :
+        <header className="page-header film-card__head" style={{ backgroundColor: '#180202', marginBottom: '0'}}>
+          <Logo />
+          <UserBlock />
+        </header>}
       <div className="page-content">
         <section className="catalog">
           <h2 className="catalog__title visually-hidden">Catalog</h2>
