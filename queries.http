@@ -54,8 +54,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZ
 
 PATCH http://localhost:5000/films/63e7edcd3118a7ee9c71569a HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImZyZWVkb21AcGlzZW0ubG9jYWwiLCJpZCI6IjYzZTdlZGNkMzExOGE3ZWU5YzcxNTY5OCIsImlhdCI6MTY3NjE0NTM3NywiZXhwIjoxNjc2MzE4MTc3fQ.9JUg-eWfe8vKgU3U1jLgP9-b80GHRwuk2GeCgvLDACY
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImZyZWVkb21AcGlzZW0ubG9jYWwiLCJpZCI6IjYzZTdlZGNkMzExOGE3ZWU5YzcxNTY5OCIsImlhdCI6MTY3NjU0MTMyOSwiZXhwIjoxNjc2NzE0MTI5fQ.ddLIUtDOILQVYxcBSAoMxQfBiApp28uCrppP57SV3oI
 
 
 {
@@ -95,15 +94,15 @@ GET http://localhost:5000/films/?genre=Crime HTTP/1.1
 ## Получить промо-фильм
 
 GET http://localhost:5000/films/promo HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6InRvcmFuc0BvdmVybG9vay5uZXQiLCJpZCI6IjYzZGJiYTE3YWU4MmZmYTExZmEwY2M2NyIsImlhdCI6MTY3NTc3MjEyNCwiZXhwIjoxNjc1OTQ0OTI0fQ.HlD1uv9qPWAUCcLRDRVVcZbbzr__vUk6zUJRwsJ5q8I
+
+
 
 ###
 
 ## Получить список фильмов "К просмотру"
 
 GET http://localhost:5000/films/favorite HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImVsaXNAYmcuY29tIiwiaWQiOiI2M2U3ODc0ZTUyMmI3NTcyNDRiMmFiMjUiLCJpYXQiOjE2NzYxMjIzNzksImV4cCI6MTY3NjI5NTE3OX0.agqJ8yJTaGB9FokyHTuJX9nMMJoU6G1_OAWsDxlYIgQ
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImVsaXNAYmcuY29tIiwiaWQiOiI2M2U3ZjMxZTMzZTcwMjQwYzBkZDIxYjgiLCJpYXQiOjE2NzY1NDE1NTcsImV4cCI6MTY3NjcxNDM1N30.jrmb6blVjnPqOgDUIpT-C9b4sMAEvqgojcJfKVCmqRY
 ###
 
 ## Изменить статус "К просмотру" у фильма
@@ -134,7 +133,7 @@ POST http://localhost:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "freedom@pisem.local",
+  "email": "elis@bg.com",
   "password": "123456"
 }
 

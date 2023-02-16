@@ -208,12 +208,23 @@ export default class FilmController extends Controller {
   public async getPromo(req: Request, res: Response): Promise<void> {
     const { user } = req;
     const result = await this.filmService.findPromo(user?.id);
+
+    if (!result) {
+      throw new HttpError(
+        StatusCodes.BAD_REQUEST,
+        'Promo film is not found',
+        'FilmController'
+      );
+    }
     this.ok(res, fillDTO(FilmResponse, result));
   }
 
   public async getFavorite(req: Request, res: Response) {
     const { user } = req;
-    const result = await this.filmService.findFavorite(user.id);
+    let result = await this.filmService.findFavorite(user.id);
+    if (!result) {
+      result = [];
+    }
     this.ok(res, fillDTO(ShortFilmResponse, result));
   }
 
